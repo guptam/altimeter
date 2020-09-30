@@ -11,6 +11,7 @@ for handler in _ROOT.handlers:
 
 
 @dataclass(frozen=True)
+# pylint: disable=too-many-instance-attributes
 class QJLogEvents(BaseLogEvent):
     """QJ Log event names"""
 

@@ -39,7 +39,7 @@ def aws2neptune_lpg(scan_id: str, config: Config, muxer: AWSScanMuxer) -> None:
     )
     print("Beginning AWS Account Scan")
 
-    scan_manifest, graph_set = run_scan(
+    _, graph_set = run_scan(
         muxer=muxer,
         config=config,
         artifact_writer=artifact_writer,
@@ -79,7 +79,7 @@ def aws2neptune_rdf(scan_id: str, config: Config, muxer: AWSScanMuxer) -> None:
         writer=str(artifact_writer.__class__),
     )
     print("Beginning AWS Account Scan")
-    scan_manifest, graph_set = run_scan(
+    _, graph_set = run_scan(
         muxer=muxer,
         config=config,
         artifact_writer=artifact_writer,
