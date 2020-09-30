@@ -23,29 +23,29 @@ class ScalarField(Field):
             >>> input = {"FieldName": "Value"}
             >>> field = ScalarField("FieldName")
             >>> links = field.parse(data=input, context={})
-            >>> print([link.to_dict() for link in links])
-            [{'pred': 'field_name', 'obj': 'Value', 'type': 'simple'}]
+            >>> print([link.dict() for link in links])
+            [{'pred': 'field_name', 'obj': 'Value', 'field_type': 'simple'}]
 
         A ScalarField with a string value and an alti_key specified::
             >>> input = {"FieldName": "Value"}
             >>> field = ScalarField("FieldName", alti_key="custom_name")
             >>> links = field.parse(data=input, context={})
-            >>> print([link.to_dict() for link in links])
-            [{'pred': 'custom_name', 'obj': 'Value', 'type': 'simple'}]
+            >>> print([link.dict() for link in links])
+            [{'pred': 'custom_name', 'obj': 'Value', 'field_type': 'simple'}]
 
         An optional ScalarField with no default value::
             >>> input = {"SomeOtherFieldName": "Value"}
             >>> field = ScalarField("FieldName", optional=True)
             >>> links = field.parse(data=input, context={})
-            >>> print([link.to_dict() for link in links])
+            >>> print([link.dict() for link in links])
             []
 
         An optional ScalarField with a default value::
             >>> input = {"SomeOtherFieldName": "Value"}
             >>> field = ScalarField("FieldName", optional=True, default_value="DefaultValue")
             >>> links = field.parse(data=input, context={})
-            >>> print([link.to_dict() for link in links])
-            [{'pred': 'field_name', 'obj': 'DefaultValue', 'type': 'simple'}]
+            >>> print([link.dict() for link in links])
+            [{'pred': 'field_name', 'obj': 'DefaultValue', 'field_type': 'simple'}]
 
     Args:
         source_key: Name of the key in the input JSON
@@ -107,10 +107,10 @@ class EmbeddedScalarField(SubField):
             >>> field = ListField("Animal", EmbeddedScalarField())
             >>> links = field.parse(data=input, context={})
             >>> for link in links:
-            ...     print(link.to_dict())
+            ...     print(link.dict())
             ...
-            {'pred': 'animal', 'obj': 'Value1', 'type': 'simple'}
-            {'pred': 'animal', 'obj': 'Value2', 'type': 'simple'}
+            {'pred': 'animal', 'obj': 'Value1', 'field_type': 'simple'}
+            {'pred': 'animal', 'obj': 'Value2', 'field_type': 'simple'}
     """
 
     def parse(self, data: Union[str, bool, int, float], context: Dict[str, Any]) -> List[Link]:

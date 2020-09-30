@@ -132,16 +132,16 @@ class TestGraphSetWithValidDataNoMerging(TestCase):
             "resources": {
                 "123": {
                     "type": "test:a",
-                    "links": [{"pred": "has-foo", "obj": "goo", "type": "simple"}],
+                    "links": [{"pred": "has-foo", "obj": "goo", "field_type": "simple"}],
                 },
                 "456": {"type": "test:a"},
                 "abc": {
                     "type": "test:b",
-                    "links": [{"pred": "has-a", "obj": "123", "type": "resource_link"}],
+                    "links": [{"pred": "has-a", "obj": "123", "field_type": "resource_link"}],
                 },
                 "def": {
                     "type": "test:b",
-                    "links": [{"pred": "name", "obj": "sue", "type": "simple"}],
+                    "links": [{"pred": "name", "obj": "sue", "field_type": "simple"}],
                 },
             },
             "errors": ["test err 1", "test err 2"],
@@ -158,16 +158,16 @@ class TestGraphSetWithValidDataNoMerging(TestCase):
             "resources": {
                 "123": {
                     "type": "test:a",
-                    "links": [{"pred": "has-foo", "obj": "goo", "type": "simple"}],
+                    "links": [{"pred": "has-foo", "obj": "goo", "field_type": "simple"}],
                 },
                 "456": {"type": "test:a"},
                 "abc": {
                     "type": "test:b",
-                    "links": [{"pred": "has-a", "obj": "123", "type": "resource_link"}],
+                    "links": [{"pred": "has-a", "obj": "123", "field_type": "resource_link"}],
                 },
                 "def": {
                     "type": "test:b",
-                    "links": [{"pred": "name", "obj": "sue", "type": "simple"}],
+                    "links": [{"pred": "name", "obj": "sue", "field_type": "simple"}],
                 },
             },
             "errors": ["test err 1", "test err 2"],
@@ -363,10 +363,10 @@ class TestGraphSetMerge(TestCase):
         self.assertEqual(graph_set_1.end_time, 25)
         self.assertCountEqual(graph_set_1.errors, ["errora1", "errora2", "errorb1", "errorb2"])
         expected_resource_dicts = [
-            {"type": "test:a", "links": [{"pred": "has-foo", "obj": "goo", "type": "simple"}]},
+            {"type": "test:a", "links": [{"pred": "has-foo", "obj": "goo", "field_type": "simple"}]},
             {"type": "test:a"},
-            {"type": "test:b", "links": [{"pred": "has-a", "obj": "123", "type": "resource_link"}]},
-            {"type": "test:b", "links": [{"pred": "name", "obj": "sue", "type": "simple"}]},
+            {"type": "test:b", "links": [{"pred": "has-a", "obj": "123", "field_type": "resource_link"}]},
+            {"type": "test:b", "links": [{"pred": "name", "obj": "sue", "field_type": "simple"}]},
         ]
         resource_dicts = [resource.to_dict() for resource in graph_set_1.resources]
         self.assertCountEqual(expected_resource_dicts, resource_dicts)

@@ -15,14 +15,14 @@ class TestListField(TestCase):
         input_str = '{"Animals": ["cow", "pig", "human"]}'
         field = ListField("Animals", EmbeddedScalarField())
         expected_output_data = [
-            {"pred": "animals", "obj": "cow", "type": "simple"},
-            {"pred": "animals", "obj": "pig", "type": "simple"},
-            {"pred": "animals", "obj": "human", "type": "simple"},
+            {"pred": "animals", "obj": "cow", "field_type": "simple"},
+            {"pred": "animals", "obj": "pig", "field_type": "simple"},
+            {"pred": "animals", "obj": "human", "field_type": "simple"},
         ]
 
         input_data = json.loads(input_str)
         links = field.parse(data=input_data, context={})
-        output_data = [link.to_dict() for link in links]
+        output_data = [link.dict() for link in links]
         self.assertCountEqual(output_data, expected_output_data)
 
     def test_valid_dicts_input(self):
@@ -32,24 +32,24 @@ class TestListField(TestCase):
             {
                 "pred": "people",
                 "obj": [
-                    {"pred": "name", "obj": "Bob", "type": "simple"},
-                    {"pred": "age", "obj": 49, "type": "simple"},
+                    {"pred": "name", "obj": "Bob", "field_type": "simple"},
+                    {"pred": "age", "obj": 49, "field_type": "simple"},
                 ],
-                "type": "multi",
+                "field_type": "multi",
             },
             {
                 "pred": "people",
                 "obj": [
-                    {"pred": "name", "obj": "Sue", "type": "simple"},
-                    {"pred": "age", "obj": 42, "type": "simple"},
+                    {"pred": "name", "obj": "Sue", "field_type": "simple"},
+                    {"pred": "age", "obj": 42, "field_type": "simple"},
                 ],
-                "type": "multi",
+                "field_type": "multi",
             },
         ]
 
         input_data = json.loads(input_str)
         links = field.parse(data=input_data, context={})
-        output_data = [link.to_dict() for link in links]
+        output_data = [link.dict() for link in links]
         self.assertCountEqual(output_data, expected_output_data)
 
     def test_valid_dicts_input_with_alti_key(self):
@@ -61,24 +61,24 @@ class TestListField(TestCase):
             {
                 "pred": "person",
                 "obj": [
-                    {"pred": "name", "obj": "Bob", "type": "simple"},
-                    {"pred": "age", "obj": 49, "type": "simple"},
+                    {"pred": "name", "obj": "Bob", "field_type": "simple"},
+                    {"pred": "age", "obj": 49, "field_type": "simple"},
                 ],
-                "type": "multi",
+                "field_type": "multi",
             },
             {
                 "pred": "person",
                 "obj": [
-                    {"pred": "name", "obj": "Sue", "type": "simple"},
-                    {"pred": "age", "obj": 42, "type": "simple"},
+                    {"pred": "name", "obj": "Sue", "field_type": "simple"},
+                    {"pred": "age", "obj": 42, "field_type": "simple"},
                 ],
-                "type": "multi",
+                "field_type": "multi",
             },
         ]
 
         input_data = json.loads(input_str)
         links = field.parse(data=input_data, context={})
-        output_data = [link.to_dict() for link in links]
+        output_data = [link.dict() for link in links]
         self.assertCountEqual(output_data, expected_output_data)
 
     def test_invalid_input_missing_source_key(self):
@@ -106,17 +106,17 @@ class TestListField(TestCase):
 
         input_data = json.loads(input_str)
         links = field.parse(data=input_data, context={})
-        output_data = [link.to_dict() for link in links]
+        output_data = [link.dict() for link in links]
         self.assertCountEqual(output_data, expected_output_data)
 
     def test_allow_scalar(self):
         input_str = '{"People": "bob"}'
         field = ListField("People", EmbeddedScalarField(), alti_key="person", allow_scalar=True)
-        expected_output_data = ({"pred": "person", "obj": "bob", "type": "simple"},)
+        expected_output_data = ({"pred": "person", "obj": "bob", "field_type": "simple"},)
 
         input_data = json.loads(input_str)
         links = field.parse(data=input_data, context={})
-        output_data = [link.to_dict() for link in links]
+        output_data = [link.dict() for link in links]
         self.assertCountEqual(output_data, expected_output_data)
 
 
@@ -128,17 +128,17 @@ class TestAnonymousListField(TestCase):
             {
                 "pred": "biota",
                 "obj": [
-                    {"pred": "biota", "obj": "cow", "type": "simple"},
-                    {"pred": "biota", "obj": "pig", "type": "simple"},
-                    {"pred": "biota", "obj": "human", "type": "simple"},
+                    {"pred": "biota", "obj": "cow", "field_type": "simple"},
+                    {"pred": "biota", "obj": "pig", "field_type": "simple"},
+                    {"pred": "biota", "obj": "human", "field_type": "simple"},
                 ],
-                "type": "multi",
+                "field_type": "multi",
             }
         ]
 
         input_data = json.loads(input_str)
         links = field.parse(data=input_data, context={})
-        output_data = [link.to_dict() for link in links]
+        output_data = [link.dict() for link in links]
         self.assertCountEqual(output_data, expected_output_data)
 
     def test_valid_dicts_input(self):
@@ -158,27 +158,27 @@ class TestAnonymousListField(TestCase):
                     {
                         "pred": "biota",
                         "obj": [
-                            {"pred": "name", "obj": "Bob", "type": "simple"},
-                            {"pred": "age", "obj": 49, "type": "simple"},
+                            {"pred": "name", "obj": "Bob", "field_type": "simple"},
+                            {"pred": "age", "obj": 49, "field_type": "simple"},
                         ],
-                        "type": "multi",
+                        "field_type": "multi",
                     },
                     {
                         "pred": "biota",
                         "obj": [
-                            {"pred": "name", "obj": "Sue", "type": "simple"},
-                            {"pred": "age", "obj": 42, "type": "simple"},
+                            {"pred": "name", "obj": "Sue", "field_type": "simple"},
+                            {"pred": "age", "obj": 42, "field_type": "simple"},
                         ],
-                        "type": "multi",
+                        "field_type": "multi",
                     },
                 ],
-                "type": "multi",
+                "field_type": "multi",
             }
         ]
 
         input_data = json.loads(input_str)
         links = field.parse(data=input_data, context={})
-        output_data = [link.to_dict() for link in links]
+        output_data = [link.dict() for link in links]
         self.assertCountEqual(output_data, expected_output_data)
 
     def test_invalid_input_missing_source_key(self):
@@ -204,11 +204,11 @@ class TestAnonymousListField(TestCase):
         field = DictField(
             "Biota", AnonymousListField("Animals", EmbeddedScalarField(), optional=True)
         )
-        expected_output_data = [{"pred": "biota", "obj": [], "type": "multi"}]
+        expected_output_data = [{"pred": "biota", "obj": [], "field_type": "multi"}]
 
         input_data = json.loads(input_str)
         links = field.parse(data=input_data, context={})
-        output_data = [link.to_dict() for link in links]
+        output_data = [link.dict() for link in links]
         self.assertCountEqual(output_data, expected_output_data)
 
     def test_allow_scalar(self):
@@ -219,12 +219,12 @@ class TestAnonymousListField(TestCase):
         expected_output_data = [
             {
                 "pred": "biota",
-                "obj": [{"pred": "biota", "obj": "tree", "type": "simple"}],
-                "type": "multi",
+                "obj": [{"pred": "biota", "obj": "tree", "field_type": "simple"}],
+                "field_type": "multi",
             }
         ]
 
         input_data = json.loads(input_str)
         links = field.parse(data=input_data, context={})
-        output_data = [link.to_dict() for link in links]
+        output_data = [link.dict() for link in links]
         self.assertCountEqual(output_data, expected_output_data)

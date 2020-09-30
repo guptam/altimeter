@@ -46,13 +46,14 @@ class SimpleLink(Link):
              :param prefix: the prefix assigned to the key
              :type parent: Dict
         """
+        obj = self.obj
         if isinstance(self.obj, int):
             # Need to handle numbers that are bigger than a Long in Java, for now we stringify it
             if self.obj > 9223372036854775807 or self.obj < -9223372036854775807:
-                self.obj = str(self.obj)
+                obj = str(self.obj)
         elif isinstance(self.obj, SimpleLink):
             print("ERROR ERROR")
-        parent[prefix + self.pred] = self.obj
+        parent[prefix + self.pred] = obj
 
 
 class MultiLink(Link):
@@ -60,18 +61,6 @@ class MultiLink(Link):
     MultiLink could exist which specifies sublinks Volume, AttachTime"""
 
     field_type = "multi"
-
-    def to_dict(self) -> Dict[str, Any]:
-        """Return a dictionary representation of this Link
-
-        Returns:
-            Dict representation of this Link
-        """
-        return {
-            "pred": self.pred,
-            "obj": [field.to_dict() for field in self.obj],
-            "type": self.field_type,
-        }
 
     def to_rdf(
         self, subj: BNode, namespace: Namespace, graph: Graph, node_cache: NodeCache
@@ -105,20 +94,6 @@ class MultiLink(Link):
 
         for field in self.obj:
             field.to_lpg(parent, vertices, edges, prefix=self.pred + ".")
-
-    @classmethod
-    def from_dict(cls: Type["MultiLink"], pred: str, obj: Any) -> "MultiLink":
-        """Create a MultiLink object from a dict
-
-        Args:
-            pred: Link predicate
-            obj: Link object, in the case of a MultiLink this is a list of Fields
-
-        Returns:
-            Link subclass object
-        """
-        fields = [link_from_dict(field) for field in obj]
-        return cls(pred=pred, obj=fields)
 
 
 class ResourceLinkLink(Link):
@@ -263,7 +238,7 @@ def link_from_dict(data: Dict[str, Any]) -> Link:
     Returns:
         object of the appropriate Link subclass
     """
-    field_type = data.get("type")
+    field_type = data.get("field_type")
     if field_type is None:
         raise LinkParseException(f"key 'type' not found in {data}")
     pred = data.get("pred")
@@ -271,15 +246,15 @@ def link_from_dict(data: Dict[str, Any]) -> Link:
         raise LinkParseException(f"key 'pred' not found in {data}")
     obj = data.get("obj")
     if field_type == "transient_resource_link":
-        return TransientResourceLinkLink.from_dict(pred, obj)
+        return TransientResourceLinkLink.parse_obj(data)
     if obj is None:
         raise LinkParseException(f"key 'obj' not found in {data}")
     if field_type == "simple":
-        return SimpleLink.from_dict(pred, obj)
+        return SimpleLink.parse_obj(data)
     if field_type == "multi":
-        return MultiLink.from_dict(pred, obj)
+        return MultiLink.parse_obj(data)
     if field_type == "resource_link":
-        return ResourceLinkLink.from_dict(pred, obj)
+        return ResourceLinkLink.parse_obj(data)
     if field_type == "tag":
-        return TagLink.from_dict(pred, obj)
+        return TagLink.parse_obj(data)
     raise LinkParseException(f"Unknown field type '{field_type}")

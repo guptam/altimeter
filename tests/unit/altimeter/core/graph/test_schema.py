@@ -10,8 +10,8 @@ class TestSchemna(TestCase):
         data = {"Key1": "Value1", "Key2": "Value2"}
         links = schema.parse(data, {})
         expected_link_data = [
-            {"pred": "key1", "obj": "Value1", "type": "simple"},
-            {"pred": "key2", "obj": "Value2", "type": "simple"},
+            {"pred": "key1", "obj": "Value1", "field_type": "simple"},
+            {"pred": "key2", "obj": "Value2", "field_type": "simple"},
         ]
-        link_data = [link.to_dict() for link in links]
+        link_data = [link.dict() for link in links]
         self.assertEqual(expected_link_data, link_data)

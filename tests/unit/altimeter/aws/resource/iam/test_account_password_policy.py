@@ -22,21 +22,21 @@ class TestAccountPasswordPolicyResourceSpec(unittest.TestCase):
         alti_resource_dict = resource.to_dict()
 
         expected_alti_resource_dict = {'type': 'account-password-policy',
-                                       'links': [{'pred': 'minimum_password_length', 'obj': 12, 'type': 'simple'},
-                                                 {'pred': 'require_symbols', 'obj': True, 'type': 'simple'},
-                                                 {'pred': 'require_numbers', 'obj': True, 'type': 'simple'}, {
+                                       'links': [{'pred': 'minimum_password_length', 'obj': 12, 'field_type': 'simple'},
+                                                 {'pred': 'require_symbols', 'obj': True, 'field_type': 'simple'},
+                                                 {'pred': 'require_numbers', 'obj': True, 'field_type': 'simple'}, {
                                                      'pred': 'require_uppercase_characters', 'obj': True,
-                                                     'type': 'simple'
+                                                     'field_type': 'simple'
                                                  }, {
                                                      'pred': 'require_lowercase_characters', 'obj': True,
-                                                     'type': 'simple'
+                                                     'field_type': 'simple'
                                                  }, {
                                                      'pred': 'allow_users_to_change_password', 'obj': True,
-                                                     'type': 'simple'
-                                                 }, {'pred': 'expire_passwords', 'obj': True, 'type': 'simple'},
-                                                 {'pred': 'max_password_age', 'obj': 90, 'type': 'simple'},
-                                                 {'pred': 'password_reuse_prevention', 'obj': 5, 'type': 'simple'},
-                                                 {'pred': 'hard_expiry', 'obj': True, 'type': 'simple'}]
+                                                     'field_type': 'simple'
+                                                 }, {'pred': 'expire_passwords', 'obj': True, 'field_type': 'simple'},
+                                                 {'pred': 'max_password_age', 'obj': 90, 'field_type': 'simple'},
+                                                 {'pred': 'password_reuse_prevention', 'obj': 5, 'field_type': 'simple'},
+                                                 {'pred': 'hard_expiry', 'obj': True, 'field_type': 'simple'}]
         }
 
         self.assertDictEqual(alti_resource_dict, expected_alti_resource_dict)

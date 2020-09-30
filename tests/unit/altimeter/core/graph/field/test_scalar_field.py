@@ -13,31 +13,31 @@ class TestScalarField(TestCase):
     def test_valid_input(self):
         input_str = '{"FieldName": "Value"}'
         field = ScalarField("FieldName")
-        expected_output_data = [{"pred": "field_name", "obj": "Value", "type": "simple"}]
+        expected_output_data = [{"pred": "field_name", "obj": "Value", "field_type": "simple"}]
 
         input_data = json.loads(input_str)
         links = field.parse(data=input_data, context={})
-        output_data = [link.to_dict() for link in links]
+        output_data = [link.dict() for link in links]
         self.assertCountEqual(output_data, expected_output_data)
 
     def test_valid_input_with_alti_key(self):
         input_str = '{"FieldName": "Value"}'
         field = ScalarField("FieldName", alti_key="alti_field_name")
-        expected_output_data = [{"pred": "alti_field_name", "obj": "Value", "type": "simple"}]
+        expected_output_data = [{"pred": "alti_field_name", "obj": "Value", "field_type": "simple"}]
 
         input_data = json.loads(input_str)
         links = field.parse(data=input_data, context={})
-        output_data = [link.to_dict() for link in links]
+        output_data = [link.dict() for link in links]
         self.assertCountEqual(output_data, expected_output_data)
 
     def test_key_present_with_optional(self):
         input_str = '{"FieldName": "Value"}'
         field = ScalarField("FieldName", optional=True)
-        expected_output_data = [{"pred": "field_name", "obj": "Value", "type": "simple"}]
+        expected_output_data = [{"pred": "field_name", "obj": "Value", "field_type": "simple"}]
 
         input_data = json.loads(input_str)
         links = field.parse(data=input_data, context={})
-        output_data = [link.to_dict() for link in links]
+        output_data = [link.dict() for link in links]
         self.assertCountEqual(output_data, expected_output_data)
 
     def test_key_absent_with_optional(self):
@@ -47,7 +47,7 @@ class TestScalarField(TestCase):
 
         input_data = json.loads(input_str)
         links = field.parse(data=input_data, context={})
-        output_data = [link.to_dict() for link in links]
+        output_data = [link.dict() for link in links]
         self.assertCountEqual(output_data, expected_output_data)
 
     def test_key_absent_without_optional(self):
@@ -61,11 +61,11 @@ class TestScalarField(TestCase):
     def test_key_absent_with_default(self):
         input_str = "{}"
         field = ScalarField("FieldName", default_value="DefaultValue")
-        expected_output_data = [{"pred": "field_name", "obj": "DefaultValue", "type": "simple"}]
+        expected_output_data = [{"pred": "field_name", "obj": "DefaultValue", "field_type": "simple"}]
 
         input_data = json.loads(input_str)
         links = field.parse(data=input_data, context={})
-        output_data = [link.to_dict() for link in links]
+        output_data = [link.dict() for link in links]
         self.assertCountEqual(output_data, expected_output_data)
 
     def test_value_not_scalar(self):
@@ -82,10 +82,10 @@ class TestEmbeddedScalarField(TestCase):
         input_data = "foo"
         parent_alti_key = "parent_alti_key"
         field = EmbeddedScalarField()
-        expected_output_data = [{"pred": "parent_alti_key", "obj": "foo", "type": "simple"}]
+        expected_output_data = [{"pred": "parent_alti_key", "obj": "foo", "field_type": "simple"}]
 
         links = field.parse(data=input_data, context={"parent_alti_key": parent_alti_key})
-        output_data = [link.to_dict() for link in links]
+        output_data = [link.dict() for link in links]
         self.assertCountEqual(output_data, expected_output_data)
 
     def test_value_not_scalar(self):

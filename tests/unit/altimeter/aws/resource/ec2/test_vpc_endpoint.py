@@ -44,13 +44,13 @@ class TestVpcEndpointResourceSpec(unittest.TestCase):
         expected_alti_resource_dict = {
             "type": "vpc-endpoint",
             "links": [
-                {"pred": "vpc_endpoint_type", "obj": "Gateway", "type": "simple"},
-                {"pred": "service_name", "obj": "com.amazonaws.us-west-2.s3", "type": "simple"},
-                {"pred": "state", "obj": "available", "type": "simple"},
+                {"pred": "vpc_endpoint_type", "obj": "Gateway", "field_type": "simple"},
+                {"pred": "service_name", "obj": "com.amazonaws.us-west-2.s3", "field_type": "simple"},
+                {"pred": "state", "obj": "available", "field_type": "simple"},
                 {
                     "pred": "vpc",
                     "obj": "arn:aws:ec2:us-west-2:111122223333:vpc/vpc-075db863045facc8e",
-                    "type": "resource_link",
+                    "field_type": "resource_link",
                 },
             ],
         }

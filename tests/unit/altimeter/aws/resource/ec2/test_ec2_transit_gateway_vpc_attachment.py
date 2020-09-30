@@ -41,27 +41,27 @@ class TestTransitGatewayVpcAttachmentSchema(unittest.TestCase):
                 {
                     "pred": "transit_gateway_attachment_id",
                     "obj": "tgw-attach-09ece7878ee9ab7a4",
-                    "type": "simple",
+                    "field_type": "simple",
                 },
-                {"pred": "transit_gateway_id", "obj": "tgw-086b599bebfee5d40", "type": "simple"},
-                {"pred": "vpc_id", "obj": "vpc-01e8457e8c00c40a7", "type": "simple"},
-                {"pred": "vpc_owner_id", "obj": "123456789012", "type": "simple"},
-                {"pred": "state", "obj": "available", "type": "simple"},
+                {"pred": "transit_gateway_id", "obj": "tgw-086b599bebfee5d40", "field_type": "simple"},
+                {"pred": "vpc_id", "obj": "vpc-01e8457e8c00c40a7", "field_type": "simple"},
+                {"pred": "vpc_owner_id", "obj": "123456789012", "field_type": "simple"},
+                {"pred": "state", "obj": "available", "field_type": "simple"},
                 {
                     "pred": "creation_time",
                     "obj": datetime.datetime(2019, 8, 23, 15, 59, 46, tzinfo=tzutc()),
-                    "type": "simple",
+                    "field_type": "simple",
                 },
                 {"obj": "subnet-07697f82fe4c6a8d6",
                     "pred": "subnet_id",
-                    "type": "simple"
+                    "field_type": "simple"
                 },
                 {"obj": "subnet-0396137c18d6c30ef",
                     "pred": "subnet_id",
-                    "type": "simple"
+                    "field_type": "simple"
                 },
-                {"pred": "dns_support", "obj": "enable", "type": "simple"},
-                {"pred": "ipv6_support", "obj": "disable", "type": "simple"},
+                {"pred": "dns_support", "obj": "enable", "field_type": "simple"},
+                {"pred": "ipv6_support", "obj": "disable", "field_type": "simple"},
             ],
         }
         self.assertDictEqual(alti_resource_dict, expected_alti_resource_dict)

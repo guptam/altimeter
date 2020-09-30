@@ -30,7 +30,7 @@ class Resource:
         """
         scan_json: Dict[str, Any] = {"type": self.type_name}
         if self.links:
-            scan_json["links"] = [link.to_dict() for link in self.links]
+            scan_json["links"] = [link.dict() for link in self.links]
         return scan_json
 
     @classmethod

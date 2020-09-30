@@ -63,26 +63,26 @@ class TestLambdaFunctionResourceSpec(TestCase):
             {
                 "type": "aws:lambda:function",
                 "links": [
-                    {"pred": "function_name", "obj": "func_name", "type": "simple"},
+                    {"pred": "function_name", "obj": "func_name", "field_type": "simple"},
                     {
                         "pred": "runtime",
                         "obj": "python3.7",
-                        "type": "simple",
+                        "field_type": "simple",
                     },
                     {
                         "pred": "vpc",
                         "obj": f"arn:aws:ec2:{region_name}:{account_id}:vpc/vpc-123abc",
-                        "type": "transient_resource_link",
+                        "field_type": "transient_resource_link",
                     },
                     {
                         "pred": "account",
                         "obj": f"arn:aws::::account/{account_id}",
-                        "type": "resource_link",
+                        "field_type": "resource_link",
                     },
                     {
                         "pred": "region",
                         "obj": f"arn:aws:::{account_id}:region/{region_name}",
-                        "type": "resource_link",
+                        "field_type": "resource_link",
                     },
                 ],
             }

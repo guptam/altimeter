@@ -26,21 +26,21 @@ class TestEBSVolumeResourceSpec(TestCase):
             {
                 "type": "aws:ec2:volume",
                 "links": [
-                    {"pred": "availability_zone", "obj": "us-east-1a", "type": "simple"},
-                    {"pred": "create_time", "obj": create_time, "type": "simple"},
-                    {"pred": "size", "obj": 1, "type": "simple"},
-                    {"pred": "state", "obj": "available", "type": "simple"},
-                    {"pred": "volume_type", "obj": "standard", "type": "simple"},
-                    {"pred": "encrypted", "obj": False, "type": "simple"},
+                    {"pred": "availability_zone", "obj": "us-east-1a", "field_type": "simple"},
+                    {"pred": "create_time", "obj": create_time, "field_type": "simple"},
+                    {"pred": "size", "obj": 1, "field_type": "simple"},
+                    {"pred": "state", "obj": "available", "field_type": "simple"},
+                    {"pred": "volume_type", "obj": "standard", "field_type": "simple"},
+                    {"pred": "encrypted", "obj": False, "field_type": "simple"},
                     {
                         "pred": "account",
                         "obj": "arn:aws::::account/123456789012",
-                        "type": "resource_link",
+                        "field_type": "resource_link",
                     },
                     {
                         "pred": "region",
                         "obj": "arn:aws:::123456789012:region/us-east-1",
-                        "type": "resource_link",
+                        "field_type": "resource_link",
                     },
                 ],
             }

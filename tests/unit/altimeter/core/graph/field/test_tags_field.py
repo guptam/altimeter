@@ -12,13 +12,13 @@ class TestTagsField(TestCase):
         )
         field = TagsField()
         expected_output_data = [
-            {"pred": "tag1", "obj": "value1", "type": "tag"},
-            {"pred": "tag2", "obj": "value2", "type": "tag"},
+            {"pred": "tag1", "obj": "value1", "field_type": "tag"},
+            {"pred": "tag2", "obj": "value2", "field_type": "tag"},
         ]
 
         input_data = json.loads(input_str)
         links = field.parse(data=input_data, context={})
-        output_data = [link.to_dict() for link in links]
+        output_data = [link.dict() for link in links]
         self.assertCountEqual(output_data, expected_output_data)
 
     def test_invalid_input(self):
@@ -38,5 +38,5 @@ class TestTagsField(TestCase):
 
         input_data = json.loads(input_str)
         links = field.parse(data=input_data, context={})
-        output_data = [link.to_dict() for link in links]
+        output_data = [link.dict() for link in links]
         self.assertCountEqual(output_data, expected_output_data)

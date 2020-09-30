@@ -20,7 +20,7 @@ class TestEBSVolumeResourceSpec(TestCase):
         expected_resources = [
             {
                 "type": "aws:account",
-                "links": [{"pred": "account_id", "obj": "123456789012", "type": "simple"}],
+                "links": [{"pred": "account_id", "obj": "123456789012", "field_type": "simple"}],
             }
         ]
         expected_api_call_stats = {

@@ -17,10 +17,10 @@ class TagsField(Field):
                               {"Key": "DOB", "Value": "1942-08-01"}]}
         >>> field = TagsField()
         >>> links = field.parse(data=input, context={})
-        >>> print(links[0].to_dict())
-        {'pred': 'Name', 'obj': 'Jerry', 'type': 'tag'}
-        >>> print(links[1].to_dict())
-        {'pred': 'DOB', 'obj': '1942-08-01', 'type': 'tag'}
+        >>> print(links[0].dict())
+        {'pred': 'Name', 'obj': 'Jerry', 'field_type': 'tag'}
+        >>> print(links[1].dict())
+        {'pred': 'DOB', 'obj': '1942-08-01', 'field_type': 'tag'}
 
     Args:
         optional: Whether this key is optional. Defaults to False.

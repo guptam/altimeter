@@ -22,10 +22,10 @@ class ListField(Field):
             >>> input = {"Animals": ["cow", "pig", "human"]}
             >>> field = ListField("Animals", EmbeddedScalarField())
             >>> links = field.parse(data=input, context={})
-            >>> for link in links: print(link.to_dict())
-            {'pred': 'animals', 'obj': 'cow', 'type': 'simple'}
-            {'pred': 'animals', 'obj': 'pig', 'type': 'simple'}
-            {'pred': 'animals', 'obj': 'human', 'type': 'simple'}
+            >>> for link in links: print(link.dict())
+            {'pred': 'animals', 'obj': 'cow', 'field_type': 'simple'}
+            {'pred': 'animals', 'obj': 'pig', 'field_type': 'simple'}
+            {'pred': 'animals', 'obj': 'human', 'field_type': 'simple'}
 
         A list of dicts:
             >>> from altimeter.core.graph.field.dict_field import EmbeddedDictField
@@ -37,14 +37,14 @@ class ListField(Field):
             >>> for link in links:
             ...   print(link.pred)
             ...   for obj in link.obj:
-            ...      print(obj.to_dict())
+            ...      print(obj.dict())
             ...
             people
-            {'pred': 'name', 'obj': 'Bob', 'type': 'simple'}
-            {'pred': 'age', 'obj': 49, 'type': 'simple'}
+            {'pred': 'name', 'obj': 'Bob', 'field_type': 'simple'}
+            {'pred': 'age', 'obj': 49, 'field_type': 'simple'}
             people
-            {'pred': 'name', 'obj': 'Sue', 'type': 'simple'}
-            {'pred': 'age', 'obj': 42, 'type': 'simple'}
+            {'pred': 'name', 'obj': 'Sue', 'field_type': 'simple'}
+            {'pred': 'age', 'obj': 42, 'field_type': 'simple'}
 
     Args:
         source_key: Name of the key in the input JSON
@@ -130,8 +130,8 @@ class AnonymousListField(Field):
                                    "Plants": ["tree", "fern"]}}
             >>> field = DictField("Biota", AnonymousListField("Animals", EmbeddedScalarField()))
             >>> links = field.parse(data=input, context={})
-            >>> for link in links: print(link.to_dict())
-            {'pred': 'biota', 'obj': [{'pred': 'biota', 'obj': 'cow', 'type': 'simple'}, {'pred': 'biota', 'obj': 'pig', 'type': 'simple'}, {'pred': 'biota', 'obj': 'human', 'type': 'simple'}], 'type': 'multi'}
+            >>> for link in links: print(link.dict())
+            {'pred': 'biota', 'obj': [{'pred': 'biota', 'obj': 'cow', 'field_type': 'simple'}, {'pred': 'biota', 'obj': 'pig', 'field_type': 'simple'}, {'pred': 'biota', 'obj': 'human', 'field_type': 'simple'}], 'field_type': 'multi'}
     """
 
     def __init__(
