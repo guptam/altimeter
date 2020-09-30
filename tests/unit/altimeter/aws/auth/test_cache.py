@@ -343,9 +343,4 @@ class TestAWSCredentialsCache(TestCase):
                 },
             }
         }
-        print("*"*80)
-        print(data)
-        print("*"*80)
-        print(AWSCredentialsCache.parse_obj(data))
-        print("*"*80)
         self.assertDictEqual(data, AWSCredentialsCache.parse_obj(data).dict())
