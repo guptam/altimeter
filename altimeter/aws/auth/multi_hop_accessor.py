@@ -28,7 +28,9 @@ class AccessStep(BaseAltiModel):
     external_id: Optional[str]
 
     @validator("external_id")
-    def render_from_env(cls, val: Optional[str]) -> Optional[str]:
+    # pylint: disable=no-self-argument,no-self-use
+    def interpolate_ext_id(cls, val: Optional[str]) -> Optional[str]:
+        """Interpolate an external id from an env var using jinja2"""
         if val is not None:
             template = jinja2.Environment(
                 loader=jinja2.BaseLoader(),
@@ -59,7 +61,9 @@ class MultiHopAccessor(BaseAltiModel):
     access_steps: List[AccessStep]
 
     @validator("access_steps")
-    def render_from_env(cls, val: List[AccessStep]) -> List[AccessStep]:
+    # pylint: disable=no-self-argument,no-self-use
+    def validate_access_steps(cls, val: List[AccessStep]) -> List[AccessStep]:
+        """Validate that the access steps of this MHA are valid"""
         if not val:
             raise ValueError("MultiHopAccessor must have a non-empty list of AccessSteps")
         for access_step in val[:-1]:

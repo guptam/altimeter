@@ -5,7 +5,7 @@ from enum import Enum
 import re
 from typing import List, Optional
 
-from pydantic import BaseModel, Field, validator  # pylint: disable=no-name-in-module
+from pydantic import BaseModel, Field, validator
 
 
 class Category(str, Enum):

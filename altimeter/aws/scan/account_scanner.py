@@ -52,6 +52,9 @@ def get_all_enabled_regions(session: boto3.Session) -> Tuple[str, ...]:
 
 @dataclass(frozen=True)
 class ScanUnit:
+    """Represents a single unit of scan which can be performed concurrently alongside any other
+    ScanUnit - in general ScanUnits should be organized to avoid API limits"""
+
     graph_name: str
     graph_version: str
     account_id: str
@@ -99,7 +102,7 @@ class AccountScanner:
         account_scan_results: List[AccountScanResult] = []
         now = int(time.time())
         prescan_account_ids_errors: DefaultDict[str, List[str]] = defaultdict(list)
-        futures: List[Future[Tuple[str, GraphSet]]] = []
+        futures: List[Future] = []
         with ThreadPoolExecutor(max_workers=self.max_threads) as executor:
             shuffled_account_ids = random.sample(
                 self.account_scan_plan.account_ids, k=len(self.account_scan_plan.account_ids)
@@ -393,7 +396,7 @@ def schedule_scan(
     secret_key: str,
     token: str,
     resource_spec_classes: Tuple[Type[AWSResourceSpec], ...],
-) -> Future[Tuple[str, GraphSet]]:
+) -> Future:
     scan_unit = ScanUnit(
         graph_name=graph_name,
         graph_version=graph_version,

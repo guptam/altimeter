@@ -1,6 +1,6 @@
 # pylint: disable=too-few-public-methods
 """Pydantic Status schemas"""
-from pydantic import BaseModel  # pylint: disable=no-name-in-module
+from pydantic import BaseModel
 
 
 class Status(BaseModel):
