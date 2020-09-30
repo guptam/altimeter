@@ -21,21 +21,18 @@ setup(
         "boto3>=1.9.130,<2",
         "jinja2>=2.11.1,<3",
         "toml>=0.10.0,<1",
-        "gremlinpython>=3.4.3"
+        "gremlinpython>=3.4.3",
+        "pydantic>=1.6.1,<2",
     ],
     extras_require={
         "qj": [
             "alembic==1.4.2",
             "fastapi>=0.60.1,<1",
             "psycopg2-binary>=2.8.5,<3",
-            "pydantic>=1.6.1,<2",
             "sqlalchemy>=1.3.16,<2",
             "uvicorn>=0.11.5,<2",
         ],
-        "hyper": [
-            "tableauhyperapi>=0.0.11355,<1",
-            "pydantic>=1.6.1,<2",
-        ]
+        "hyper": ["tableauhyperapi>=0.0.11355,<1",],
     },
     data_files=[
         (

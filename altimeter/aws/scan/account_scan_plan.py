@@ -28,7 +28,7 @@ class AccountScanPlan:
         return {
             "account_ids": self.account_ids,
             "regions": list(self.regions),
-            "accessor": self.accessor.to_dict(),
+            "accessor": self.accessor.dict(),
         }
 
     @classmethod
@@ -46,7 +46,7 @@ class AccountScanPlan:
         account_ids = account_scan_plan_dict["account_ids"]
         regions = account_scan_plan_dict["regions"]
         accessor_dict = account_scan_plan_dict["accessor"]
-        accessor = Accessor.from_dict(accessor_dict)
+        accessor = Accessor.parse_obj(accessor_dict)
         return cls(account_ids=account_ids, regions=regions, accessor=accessor)
 
     def to_batches(self, max_accounts: int) -> List["AccountScanPlan"]:

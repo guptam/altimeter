@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import random
 import time
 import traceback
-from typing import Any, DefaultDict, Dict, List, Tuple, Type
+from typing import DefaultDict, Dict, List, Tuple, Type
 
 import boto3
 
@@ -30,6 +30,7 @@ from altimeter.core.graph.graph_spec import GraphSpec
 from altimeter.core.log import Logger
 from altimeter.core.multilevel_counter import MultilevelCounter
 from altimeter.core.resource.resource import Resource
+from altimeter.aws.models.account_scan_result import AccountScanResult
 
 
 def get_all_enabled_regions(session: boto3.Session) -> Tuple[str, ...]:
@@ -93,12 +94,12 @@ class AccountScanner:
         if scan_sub_accounts:
             self.resource_spec_classes += ORG_RESOURCE_SPEC_CLASSES
 
-    def scan(self) -> List[Dict[str, Any]]:
+    def scan(self) -> List[AccountScanResult]:
         logger = Logger()
-        scan_result_dicts = []
+        account_scan_results: List[AccountScanResult] = []
         now = int(time.time())
         prescan_account_ids_errors: DefaultDict[str, List[str]] = defaultdict(list)
-        futures = []
+        futures: List[Future[Tuple[str, GraphSet]]] = []
         with ThreadPoolExecutor(max_workers=self.max_threads) as executor:
             shuffled_account_ids = random.sample(
                 self.account_scan_plan.account_ids, k=len(self.account_scan_plan.account_ids)
@@ -227,20 +228,20 @@ class AccountScanner:
                             trace_back=trace_back,
                         )
                         prescan_account_ids_errors[account_id].append(f"{error_str}\n{trace_back}")
-        account_ids_graph_set_dicts: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
+        account_ids_graph_sets: Dict[str, List[GraphSet]] = defaultdict(list)
         for future in as_completed(futures):
-            account_id, graph_set_dict = future.result()
-            account_ids_graph_set_dicts[account_id].append(graph_set_dict)
-        # first make sure no account id appears both in account_ids_graph_set_dicts
+            account_id, graph_set = future.result()
+            account_ids_graph_sets[account_id].append(graph_set)
+        # first make sure no account id appears both in account_ids_graph_sets
         # and prescan_account_ids_errors - this should never happen
-        doubled_accounts = set(account_ids_graph_set_dicts.keys()).intersection(
+        doubled_accounts = set(account_ids_graph_sets.keys()).intersection(
             set(prescan_account_ids_errors.keys())
         )
         if doubled_accounts:
             raise Exception(
                 (
                     f"BUG: Account(s) {doubled_accounts} in both "
-                    "account_ids_graph_set_dicts and prescan_account_ids_errors."
+                    "account_ids_graph_sets and prescan_account_ids_errors."
                 )
             )
         # graph prescan error accounts
@@ -264,22 +265,22 @@ class AccountScanner:
                 )
                 logger.info(event=AWSLogEvents.ScanAWSAccountEnd)
                 api_call_stats = account_graph_set.stats.to_dict()
-                scan_result_dicts.append(
-                    {
-                        "account_id": account_id,
-                        "output_artifact": output_artifact,
-                        "errors": errors,
-                        "api_call_stats": api_call_stats,
-                    }
+                account_scan_results.append(
+                    AccountScanResult(
+                        account_id=account_id,
+                        artifacts=[output_artifact],
+                        errors=errors,
+                        api_call_stats=api_call_stats,
+                    )
                 )
         # graph rest
-        for account_id, graph_set_dicts in account_ids_graph_set_dicts.items():
+        for account_id, graph_sets in account_ids_graph_sets.items():
             with logger.bind(account_id=account_id):
                 # if there are any errors whatsoever we generate an empty graph with
                 # errors only
                 errors = []
-                for graph_set_dict in graph_set_dicts:
-                    errors += graph_set_dict["errors"]
+                for graph_set in graph_sets:
+                    errors += graph_set.errors
                 if errors:
                     unscanned_account_resource = UnscannedAccountResourceSpec.create_resource(
                         account_id=account_id, errors=errors
@@ -304,26 +305,25 @@ class AccountScanner:
                         errors=[],
                         stats=MultilevelCounter(),
                     )
-                    for graph_set_dict in graph_set_dicts:
-                        graph_set = GraphSet.from_dict(graph_set_dict)
+                    for graph_set in graph_sets:
                         account_graph_set.merge(graph_set)
                 output_artifact = self.artifact_writer.write_json(
                     name=account_id, data=account_graph_set.to_dict()
                 )
                 logger.info(event=AWSLogEvents.ScanAWSAccountEnd)
                 api_call_stats = account_graph_set.stats.to_dict()
-                scan_result_dicts.append(
-                    {
-                        "account_id": account_id,
-                        "output_artifact": output_artifact,
-                        "errors": errors,
-                        "api_call_stats": api_call_stats,
-                    }
+                account_scan_results.append(
+                    AccountScanResult(
+                        account_id=account_id,
+                        artifacts=[output_artifact],
+                        errors=errors,
+                        api_call_stats=api_call_stats,
+                    )
                 )
-        return scan_result_dicts
+        return account_scan_results
 
 
-def scan_scan_unit(scan_unit: ScanUnit) -> Tuple[str, Dict[str, Any]]:
+def scan_scan_unit(scan_unit: ScanUnit) -> Tuple[str, GraphSet]:
     logger = Logger()
     with logger.bind(
         account_id=scan_unit.account_id,
@@ -379,7 +379,7 @@ def scan_scan_unit(scan_unit: ScanUnit) -> Tuple[str, Dict[str, Any]]:
         end_t = time.time()
         elapsed_sec = end_t - start_t
         logger.info(event=AWSLogEvents.ScanAWSAccountServiceEnd, elapsed_sec=elapsed_sec)
-        return (scan_unit.account_id, graph_set.to_dict())
+        return (scan_unit.account_id, graph_set)
 
 
 def schedule_scan(
@@ -393,7 +393,7 @@ def schedule_scan(
     secret_key: str,
     token: str,
     resource_spec_classes: Tuple[Type[AWSResourceSpec], ...],
-) -> Future:
+) -> Future[Tuple[str, GraphSet]]:
     scan_unit = ScanUnit(
         graph_name=graph_name,
         graph_version=graph_version,

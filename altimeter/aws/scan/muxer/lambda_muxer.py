@@ -13,6 +13,7 @@ from altimeter.aws.scan.muxer import AWSScanMuxer
 from altimeter.aws.scan.account_scan_plan import AccountScanPlan
 from altimeter.core.config import Config
 from altimeter.core.log import Logger
+from altimeter.aws.models.account_scan_result import AccountScanResult
 
 
 class LambdaAWSScanMuxer(AWSScanMuxer):
@@ -46,7 +47,7 @@ class LambdaAWSScanMuxer(AWSScanMuxer):
 
     def _schedule_account_scan(
         self, executor: ThreadPoolExecutor, account_scan_plan: AccountScanPlan
-    ) -> Future:
+    ) -> Future[List[AccountScanResult]]:
         """Schedule an account scan by calling the AccountScan lambda with
         the proper arguments."""
         lambda_event = {
@@ -68,7 +69,7 @@ class LambdaAWSScanMuxer(AWSScanMuxer):
 
 def invoke_lambda(
     lambda_name: str, lambda_timeout: int, event: Dict[str, Any]
-) -> List[Dict[str, Any]]:
+) -> List[AccountScanResult]:
     """Invoke an AWS Lambda function
 
     Args:
@@ -78,7 +79,7 @@ def invoke_lambda(
         event: event data to send to the lambda
 
     Returns:
-        lambda response payload
+        lambda response payload serialized to a list of AccountScanResult
 
     Raises:
         Exception if there was an error invoking the lambda.
@@ -102,11 +103,16 @@ def invoke_lambda(
             error = str(invoke_ex)
             logger.info(event=AWSLogEvents.RunAccountScanLambdaError, error=error)
             raise Exception(f"Error while invoking {lambda_name} with event {event}: {error}")
+            # FIXME this happens with some frequency. Ideally we would graph an unscanned
+            # account in this case, currently causes the entire scan to fail fast.
         payload: bytes = resp["Payload"].read()
         if resp.get("FunctionError", None):
             function_error = payload.decode()
             logger.info(event=AWSLogEvents.RunAccountScanLambdaError, error=function_error)
             raise Exception(f"Function error in {lambda_name} with event {event}: {function_error}")
-        payload_dict = json.loads(payload)
+        payload_dict_list = json.loads(payload)
+        account_scan_results = [
+            AccountScanResult.parse_obj(payload_dict) for payload_dict in payload_dict_list
+        ]
         logger.info(event=AWSLogEvents.RunAccountScanLambdaEnd)
-        return payload_dict
+        return account_scan_results

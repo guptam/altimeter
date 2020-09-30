@@ -67,7 +67,7 @@ class TestAWSCredentials(TestCase):
             "session_token": "testst",
             "expiration": in_five_min_epoch,
         }
-        aws_credentials_from_dict = AWSCredentials.from_dict(data=data)
+        aws_credentials_from_dict = AWSCredentials.parse_obj(data)
         self.assertEqual(aws_credentials, aws_credentials_from_dict)
 
 
@@ -78,18 +78,6 @@ class TestAWSCredentialsCacheKey(TestCase):
         )
         expected_str = "1234:test_role:test_role_session"
         self.assertEqual(str(key), expected_str)
-
-    def test_from_str(self):
-        str = "1234:test_role:test_role_session"
-        expected_key = AWSCredentialsCacheKey(
-            account_id="1234", role_name="test_role", role_session_name="test_role_session"
-        )
-        key = AWSCredentialsCacheKey.from_str(str)
-        self.assertEqual(expected_key, key)
-
-    def test_from_str_to_str(self):
-        key_str = "1234:test_role:test_role_session"
-        self.assertEqual(key_str, str(AWSCredentialsCacheKey.from_str(key_str)))
 
 
 class TestAWSCredentialsCache(TestCase):
@@ -236,41 +224,49 @@ class TestAWSCredentialsCache(TestCase):
     def test_to_dict(self):
         cache = AWSCredentialsCache()
         in_five_min_epoch = int(time.time()) + 5 * 60
-        aws_credentials = AWSCredentials(
+        aws_credentials_1 = AWSCredentials(
             access_key_id="test_aki",
             secret_access_key="test_sak",
             session_token="test_st",
             expiration=in_five_min_epoch,
         )
         cache.put(
-            credentials=aws_credentials,
+            credentials=aws_credentials_1,
             account_id="123456789012",
             role_name="test_rn",
             role_session_name="test_rsn",
         )
-        aws_credentials = AWSCredentials(
+        aws_credentials_2 = AWSCredentials(
             access_key_id="test_aki2",
             secret_access_key="test_sak2",
             session_token="test_st2",
             expiration=in_five_min_epoch,
         )
         cache.put(
-            credentials=aws_credentials,
+            credentials=aws_credentials_2,
             account_id="123456789012",
             role_name="test_rn2",
             role_session_name="test_rsn2",
         )
         self.assertDictEqual(
-            cache.to_dict(),
+            cache.dict(),
             {
                 "cache": {
-                    "123456789012:test_rn:test_rsn": {
+                    AWSCredentialsCacheKey(
+                        account_id="123456789012",
+                        role_session_name = "test_rsn",
+                        role_name="test_rn",
+        ): {
                         "access_key_id": "test_aki",
                         "secret_access_key": "test_sak",
                         "session_token": "test_st",
                         "expiration": in_five_min_epoch,
                     },
-                    "123456789012:test_rn2:test_rsn2": {
+                    AWSCredentialsCacheKey(
+                        account_id="123456789012",
+                        role_session_name="test_rsn2",
+                        role_name="test_rn2"
+                    ): {
                         "access_key_id": "test_aki2",
                         "secret_access_key": "test_sak2",
                         "session_token": "test_st2",
@@ -325,7 +321,7 @@ class TestAWSCredentialsCache(TestCase):
                 },
             }
         }
-        from_data_cache = AWSCredentialsCache.from_dict(data)
+        from_data_cache = AWSCredentialsCache.parse_obj(data)
         self.assertEqual(from_data_cache, cache)
 
     @mock_sts
@@ -347,4 +343,9 @@ class TestAWSCredentialsCache(TestCase):
                 },
             }
         }
-        self.assertDictEqual(data, AWSCredentialsCache.from_dict(data).to_dict())
+        print("*"*80)
+        print(data)
+        print("*"*80)
+        print(AWSCredentialsCache.parse_obj(data))
+        print("*"*80)
+        self.assertDictEqual(data, AWSCredentialsCache.parse_obj(data).dict())

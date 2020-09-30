@@ -4,9 +4,6 @@ artifact_path = "/tmp/altimeter_single_account"
 graph_name = "alti"
 pruner_max_age_min = 4320 # prune graphs over 3 days old
 
-[access]
-    cache_creds = true
-
 [scan]
     # accounts to scan
     accounts = ["1234"]

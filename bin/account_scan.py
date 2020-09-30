@@ -10,7 +10,7 @@ from altimeter.core.json_encoder import json_encoder
 from altimeter.core.parameters import get_required_lambda_event_var
 
 
-def lambda_handler(event: Dict[str, Any], context: Any) -> None:
+def lambda_handler(event: Dict[str, Any], _: Any) -> None:
     """Entrypoint"""
     root = logging.getLogger()
     if root.handlers:
@@ -37,7 +37,9 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> None:
         preferred_account_scan_regions=preferred_account_scan_regions,
         scan_sub_accounts=scan_sub_accounts,
     )
-    scan_results_dict = account_scanner.scan()
-    scan_results_str = json.dumps(scan_results_dict, default=json_encoder)
-    json_results = json.loads(scan_results_str)
-    return json_results
+    account_scan_results = account_scanner.scan()
+    account_scan_results_dicts = [
+        account_scan_result.dict() for account_scan_result in account_scan_results
+    ]
+    account_scan_results_str = json.dumps(account_scan_results_dicts, default=json_encoder)
+    return json.loads(account_scan_results_str)

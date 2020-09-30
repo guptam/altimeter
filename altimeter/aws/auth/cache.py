@@ -1,13 +1,15 @@
 """Classes for caching AWS credentials"""
-from dataclasses import asdict, dataclass, field
+from collections import UserString
 import time
-from typing import Any, Dict, Optional, Type
+from typing import Dict, Optional
 
 import boto3
+from pydantic import Field
+
+from altimeter.core.alti_base_model import BaseAltiModel
 
 
-@dataclass(frozen=True)
-class AWSCredentials:
+class AWSCredentials(BaseAltiModel):
     """Represents a set of AWS Credentials
 
     Args:
@@ -39,14 +41,8 @@ class AWSCredentials:
             region_name=region_name,
         )
 
-    @classmethod
-    def from_dict(cls: Type["AWSCredentials"], data: Dict[str, Any]) -> "AWSCredentials":
-        """Build an AWSCredentials object from a dictionary"""
-        return cls(**data)
 
-
-@dataclass(frozen=True)
-class AWSCredentialsCacheKey:
+class AWSCredentialsCacheKey(UserString):
     """Represents a credential cache key
 
     Args:
@@ -55,27 +51,17 @@ class AWSCredentialsCacheKey:
         role_session_name: session role session name
     """
 
-    account_id: str
-    role_name: str
-    role_session_name: str
-
-    def __str__(self) -> str:
-        return ":".join((self.account_id, self.role_name, self.role_session_name))
-
-    @classmethod
-    def from_str(cls: Type["AWSCredentialsCacheKey"], key: str) -> "AWSCredentialsCacheKey":
-        account_id, role_name, role_session_name = key.split(":")
-        return cls(account_id=account_id, role_name=role_name, role_session_name=role_session_name)
+    def __init__(self, account_id: str, role_name: str, role_session_name: str) -> None:
+        self.data = ":".join((account_id, role_name, role_session_name))
 
 
-@dataclass(frozen=True)
-class AWSCredentialsCache:
+class AWSCredentialsCache(BaseAltiModel):
     """An AWSCredentialsCache is a cache for AWSCredentials."""
 
     # https://github.com/PyCQA/pylint/issues/2698
     # pylint: disable=unsupported-assignment-operation,no-member,unsupported-delete-operation,unsubscriptable-object
 
-    cache: Dict[AWSCredentialsCacheKey, AWSCredentials] = field(default_factory=dict)
+    cache: Dict[str, AWSCredentials] = Field(default_factory=dict)
 
     def put(
         self, credentials: AWSCredentials, account_id: str, role_name: str, role_session_name: str
@@ -99,8 +85,10 @@ class AWSCredentialsCache:
                     f"{account_id} - they are for {caller_id['Account']}"
                 )
             )
-        cache_key = AWSCredentialsCacheKey(account_id, role_name, role_session_name)
-        self.cache[cache_key] = credentials
+        cache_key = AWSCredentialsCacheKey(
+            account_id=account_id, role_name=role_name, role_session_name=role_session_name,
+        )
+        self.cache[cache_key.data] = credentials
 
     def get(
         self,
@@ -121,22 +109,13 @@ class AWSCredentialsCache:
         Returns:
             boto3.Session from credentials if cached, else None.
         """
-        cache_key = AWSCredentialsCacheKey(account_id, role_name, role_session_name)
-        cache_val = self.cache.get(cache_key)
+        cache_key = AWSCredentialsCacheKey(
+            account_id=account_id, role_name=role_name, role_session_name=role_session_name,
+        )
+        cache_val = self.cache.get(cache_key.data)
         if cache_val is not None:
             if cache_val.is_expired():
-                del self.cache[cache_key]
+                del self.cache[cache_key.data]
             else:
-                return self.cache[cache_key].get_session(region_name=region_name)
+                return self.cache[cache_key.data].get_session(region_name=region_name)
         return None
-
-    def to_dict(self) -> Dict[str, Any]:
-        return {"cache": {str(key): asdict(val) for key, val in self.cache.items()}}
-
-    @classmethod
-    def from_dict(cls: Type["AWSCredentialsCache"], data: Dict[str, Any]) -> "AWSCredentialsCache":
-        cache = {
-            AWSCredentialsCacheKey.from_str(key=key): AWSCredentials.from_dict(data=val)
-            for key, val in data["cache"].items()
-        }
-        return cls(cache=cache)

@@ -1,5 +1,7 @@
 from typing import Tuple, Set, List, Dict
 
+import boto3
+
 from altimeter.aws.auth.accessor import Accessor
 from altimeter.aws.log_events import AWSLogEvents
 from altimeter.aws.scan.account_scan_plan import AccountScanPlan
@@ -39,12 +41,18 @@ def run_scan(
     artifact_writer: ArtifactWriter,
     artifact_reader: ArtifactReader,
 ) -> Tuple[ScanManifest, GraphSet]:
-    if config.scan.scan_sub_accounts:
-        account_ids = get_sub_account_ids(config.scan.accounts, config.access.accessor)
+    if config.scan.accounts:
+        scan_account_ids = config.scan.accounts
     else:
-        account_ids = config.scan.accounts
+        sts_client = boto3.client("sts")
+        scan_account_id = sts_client.get_caller_identity()["Account"]
+        scan_account_ids = (scan_account_id,)
+    if config.scan.scan_sub_accounts:
+        account_ids = get_sub_account_ids(scan_account_ids, config.accessor)
+    else:
+        account_ids = scan_account_ids
     account_scan_plan = AccountScanPlan(
-        account_ids=account_ids, regions=config.scan.regions, accessor=config.access.accessor
+        account_ids=account_ids, regions=config.scan.regions, accessor=config.accessor
     )
     logger = Logger()
     logger.info(event=AWSLogEvents.ScanAWSAccountsStart)

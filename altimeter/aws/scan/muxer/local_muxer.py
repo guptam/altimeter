@@ -7,11 +7,12 @@ from altimeter.aws.scan.account_scan_plan import AccountScanPlan
 from altimeter.aws.scan.account_scanner import AccountScanner
 from altimeter.core.artifact_io.writer import ArtifactWriter
 from altimeter.core.config import Config
+from altimeter.aws.models.account_scan_result import AccountScanResult
 
 
 def local_account_scan(
     scan_id: str, account_scan_plan_dict: Dict[str, Any], config: Config,
-) -> List[Dict[str, Any]]:
+) -> List[AccountScanResult]:
     """Scan a set of accounts.
 
     Args:
@@ -37,7 +38,7 @@ class LocalAWSScanMuxer(AWSScanMuxer):
 
     def _schedule_account_scan(
         self, executor: ThreadPoolExecutor, account_scan_plan: AccountScanPlan
-    ) -> Future:
+    ) -> Future[List[AccountScanResult]]:
         """Schedule a local account scan. Note that we serialize the AccountScanPlan
         because boto3 sessions are not thread safe.
 

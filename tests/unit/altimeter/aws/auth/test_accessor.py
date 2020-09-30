@@ -109,10 +109,10 @@ class TestAccessor(TestCase):
                     accessor.get_session(account_id="123456789012")
 
     def test_from_dict(self):
-        accessor = Accessor.from_dict(data=TEST_ACCESSOR_DICT)
+        accessor = Accessor.parse_obj(TEST_ACCESSOR_DICT)
         self.maxDiff = None
         self.assertDictEqual(
-            accessor.to_dict(),
+            accessor.dict(),
             {
                 "multi_hop_accessors": [
                     {
@@ -171,7 +171,7 @@ class TestAccessor(TestCase):
                 fp.write(json.dumps(TEST_ACCESSOR_FILE_CONTENT))
             accessor = Accessor.from_file(filepath=access_config_path)
         self.assertDictEqual(
-            accessor.to_dict(),
+            accessor.dict(),
             {
                 "multi_hop_accessors": [
                     {
@@ -214,58 +214,7 @@ class TestAccessor(TestCase):
             },
         )
 
-    @mock.patch.dict(os.environ, {"TEST_EXT_ID": TEST_EXT_ID})
-    def test_from_file_without_cred_caching(self):
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            access_config_path = Path(tmp_dir, "access_config.json")
-            with open(access_config_path, "w") as fp:
-                fp.write(json.dumps(TEST_ACCESSOR_FILE_CONTENT))
-            accessor = Accessor.from_file(filepath=access_config_path, cache_creds=False)
-        self.assertDictEqual(
-            accessor.to_dict(),
-            {
-                "multi_hop_accessors": [
-                    {
-                        "role_session_name": "altimeter-mb-a",
-                        "access_steps": [
-                            {
-                                "role_name": "OrganizationAccountAccessRole",
-                                "account_id": "123456789012",
-                                "external_id": "foo",
-                            },
-                            {
-                                "role_name": "OrganizationAccountAccessRole",
-                                "account_id": None,
-                                "external_id": None,
-                            },
-                        ],
-                    },
-                    {
-                        "role_session_name": "altimeter-mb-b",
-                        "access_steps": [
-                            {
-                                "role_name": "OrganizationAccountAccessRole",
-                                "account_id": "123456789012",
-                                "external_id": "foo",
-                            },
-                            {
-                                "role_name": "OrganizationAccountAccessRole",
-                                "account_id": "123456789012",
-                                "external_id": "foo",
-                            },
-                            {
-                                "role_name": "OrganizationAccountAccessRole",
-                                "account_id": None,
-                                "external_id": None,
-                            },
-                        ],
-                    },
-                ],
-                "credentials_cache": {"cache": {}},
-            },
-        )
-
-    def from_dict_to_dict(self):
+    def from_dict_dict(self):
         data = {
             "multi_hop_accessors": [
                 {
@@ -306,7 +255,7 @@ class TestAccessor(TestCase):
             ],
             "credentials_cache": {"cache": {}},
         }
-        self.assertDictEqual(data, Accessor.from_dict(data=data).to_dict())
+        self.assertDictEqual(data, Accessor.parse_obj(data).dict())
 
     @mock.patch.dict(os.environ, {"TEST_EXT_ID": TEST_EXT_ID})
     def from_dict_to_dict_with_cache(self):
@@ -366,10 +315,10 @@ class TestAccessor(TestCase):
                 }
             },
         }
-        self.assertDictEqual(data, Accessor.from_dict(data=data).to_dict())
+        self.assertDictEqual(data, Accessor.parse_obj(data).dict())
 
     def test_str(self):
-        accessor = Accessor.from_dict(data=TEST_ACCESSOR_DICT)
+        accessor = Accessor.parse_obj(TEST_ACCESSOR_DICT)
         self.assertEqual(
             str(accessor),
             (

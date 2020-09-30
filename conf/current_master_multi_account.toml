@@ -5,11 +5,10 @@ artifact_path = "/tmp/altimeter_multi_account"
 graph_name = "alti"
 pruner_max_age_min = 4320 # prune graphs over 3 days old
 
-[access]
-    cache_creds = true
-    [[access.multi_hop_accessors]]
+[accessor]
+    [[accessor.multi_hop_accessors]]
         role_session_name = "altimeter"
-        [[access.multi_hop_accessors.access_steps]]
+        [[accessor.multi_hop_accessors.access_steps]]
             role_name = "OrganizationAccountAccessRole"
 
 [scan]

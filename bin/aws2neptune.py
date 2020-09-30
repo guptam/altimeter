@@ -165,7 +165,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         },
     }
 
-    config = Config.from_dict(config_dict)
+    config = Config.parse_obj(config_dict)
     scan_id = generate_scan_id()
     muxer = LocalAWSScanMuxer(scan_id=scan_id, config=config)
 
