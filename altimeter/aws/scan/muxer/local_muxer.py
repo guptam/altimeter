@@ -38,7 +38,7 @@ class LocalAWSScanMuxer(AWSScanMuxer):
 
     def _schedule_account_scan(
         self, executor: ThreadPoolExecutor, account_scan_plan: AccountScanPlan
-    ) -> Future[List[AccountScanResult]]:
+    ) -> Future:
         """Schedule a local account scan. Note that we serialize the AccountScanPlan
         because boto3 sessions are not thread safe.
 

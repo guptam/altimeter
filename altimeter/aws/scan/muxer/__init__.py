@@ -1,14 +1,13 @@
 """Abstract base class for AWSScanMuxers."""
 import abc
 from concurrent.futures import as_completed, Future, ThreadPoolExecutor
-from typing import Generator, List
+from typing import Generator
 
 from altimeter.aws.log_events import AWSLogEvents
 from altimeter.aws.scan.account_scan_plan import AccountScanPlan
 from altimeter.aws.scan.account_scan_manifest import AccountScanManifest
 from altimeter.core.config import Config
 from altimeter.core.log import Logger
-from altimeter.aws.models.account_scan_result import AccountScanResult
 
 
 class AWSScanMuxer(abc.ABC):
@@ -88,7 +87,7 @@ class AWSScanMuxer(abc.ABC):
     @abc.abstractmethod
     def _schedule_account_scan(
         self, executor: ThreadPoolExecutor, account_scan_plan: AccountScanPlan
-    ) -> Future[List[AccountScanResult]]:
+    ) -> Future:
         """Given a ThreadPoolExecutor and scan details (date/time/accounts/regions),
         schedule an account scan by making a call to executor.submit and return the Future
         returned by executor.submit.

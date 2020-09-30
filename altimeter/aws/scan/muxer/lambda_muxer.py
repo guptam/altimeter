@@ -47,7 +47,7 @@ class LambdaAWSScanMuxer(AWSScanMuxer):
 
     def _schedule_account_scan(
         self, executor: ThreadPoolExecutor, account_scan_plan: AccountScanPlan
-    ) -> Future[List[AccountScanResult]]:
+    ) -> Future:
         """Schedule an account scan by calling the AccountScan lambda with
         the proper arguments."""
         lambda_event = {
