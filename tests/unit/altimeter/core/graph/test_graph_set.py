@@ -133,18 +133,18 @@ class TestGraphSetWithValidDataNoMerging(TestCase):
                 "123": {
                     "resource_id": "123",
                     "resource_type": "test:a",
-                    "links": [{"pred": "has-foo", "obj": "goo", "field_type": "simple"}],
+                    "links": [{"pred": "has-foo", "obj": "goo", "link_type": "simple"}],
                 },
                 "456": {"resource_id": "456", "resource_type": "test:a", "links": []},
                 "abc": {
                     "resource_id": "abc",
                     "resource_type": "test:b",
-                    "links": [{"pred": "has-a", "obj": "123", "field_type": "resource_link"}],
+                    "links": [{"pred": "has-a", "obj": "123", "link_type": "resource_link"}],
                 },
                 "def": {
                     "resource_id": "def",
                     "resource_type": "test:b",
-                    "links": [{"pred": "name", "obj": "sue", "field_type": "simple"}],
+                    "links": [{"pred": "name", "obj": "sue", "link_type": "simple"}],
                 },
             },
             "errors": ["test err 1", "test err 2"],
@@ -161,16 +161,16 @@ class TestGraphSetWithValidDataNoMerging(TestCase):
             "resources": {
                 "123": {
                     "resource_type": "test:a",
-                    "links": [{"pred": "has-foo", "obj": "goo", "field_type": "simple"}],
+                    "links": [{"pred": "has-foo", "obj": "goo", "link_type": "simple"}],
                 },
                 "456": {"resource_type": "test:a"},
                 "abc": {
                     "resource_type": "test:b",
-                    "links": [{"pred": "has-a", "obj": "123", "field_type": "resource_link"}],
+                    "links": [{"pred": "has-a", "obj": "123", "link_type": "resource_link"}],
                 },
                 "def": {
                     "resource_type": "test:b",
-                    "links": [{"pred": "name", "obj": "sue", "field_type": "simple"}],
+                    "links": [{"pred": "name", "obj": "sue", "link_type": "simple"}],
                 },
             },
             "errors": ["test err 1", "test err 2"],
@@ -186,18 +186,18 @@ class TestGraphSetWithValidDataNoMerging(TestCase):
                 "123": {
                     "resource_id": "123",
                     "resource_type": "test:a",
-                    "links": [{"pred": "has-foo", "obj": "goo", "field_type": "simple"}],
+                    "links": [{"pred": "has-foo", "obj": "goo", "link_type": "simple"}],
                 },
                 "456": {"resource_id": "456", "resource_type": "test:a", "links": []},
                 "abc": {
                     "resource_id": "abc",
                     "resource_type": "test:b",
-                    "links": [{"pred": "has-a", "obj": "123", "field_type": "resource_link"}],
+                    "links": [{"pred": "has-a", "obj": "123", "link_type": "resource_link"}],
                 },
                 "def": {
                     "resource_id": "def",
                     "resource_type": "test:b",
-                    "links": [{"pred": "name", "obj": "sue", "field_type": "simple"}],
+                    "links": [{"pred": "name", "obj": "sue", "link_type": "simple"}],
                 },
             },
             "errors": ["test err 1", "test err 2"],
@@ -395,18 +395,18 @@ class TestGraphSetMerge(TestCase):
             {
                 "resource_id": "123",
                 "resource_type": "test:a",
-                "links": [{"pred": "has-foo", "obj": "goo", "field_type": "simple"}],
+                "links": [{"pred": "has-foo", "obj": "goo", "link_type": "simple"}],
             },
             {"resource_id": "456", "resource_type": "test:a", "links": []},
             {
                 "resource_id": "abc",
                 "resource_type": "test:b",
-                "links": [{"pred": "has-a", "obj": "123", "field_type": "resource_link"}],
+                "links": [{"pred": "has-a", "obj": "123", "link_type": "resource_link"}],
             },
             {
                 "resource_id": "def",
                 "resource_type": "test:b",
-                "links": [{"pred": "name", "obj": "sue", "field_type": "simple"}],
+                "links": [{"pred": "name", "obj": "sue", "link_type": "simple"}],
             },
         ]
         resource_dicts = [resource.dict() for resource in graph_set_1.resources]

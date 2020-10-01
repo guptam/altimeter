@@ -21,40 +21,40 @@ class TestLinkParseObj(unittest.TestCase):
 
     def testMissingPred(self):
         with self.assertRaises(LinkParseException):
-            Link.parse_obj({"field_type": "simple"})
+            Link.parse_obj({"link_type": "simple"})
 
     def testMissingObj(self):
         with self.assertRaises(LinkParseException):
-            Link.parse_obj({"field_type": "simple", "pred": "test-pred"})
+            Link.parse_obj({"link_type": "simple", "pred": "test-pred"})
 
     def testUnknownType(self):
         with self.assertRaises(LinkParseException):
-            Link.parse_obj({"field_type": "fake-type", "pred": "test-pred", "obj": "test-obj"})
+            Link.parse_obj({"link_type": "fake-type", "pred": "test-pred", "obj": "test-obj"})
 
     def testSimpleType(self):
-        link = Link.parse_obj({"field_type": "simple", "pred": "test-pred", "obj": "test-obj"})
+        link = Link.parse_obj({"link_type": "simple", "pred": "test-pred", "obj": "test-obj"})
         self.assertIsInstance(link, SimpleLink)
 
     def testTagType(self):
-        link = Link.parse_obj({"field_type": "tag", "pred": "test-pred", "obj": "test-obj"})
+        link = Link.parse_obj({"link_type": "tag", "pred": "test-pred", "obj": "test-obj"})
         self.assertIsInstance(link, TagLink)
 
     def testResourceLinkType(self):
-        link = Link.parse_obj({"field_type": "resource_link", "pred": "test-pred", "obj": "test-obj"})
+        link = Link.parse_obj({"link_type": "resource_link", "pred": "test-pred", "obj": "test-obj"})
         self.assertIsInstance(link, ResourceLinkLink)
 
     def testTransientResourceLinkType(self):
         link = Link.parse_obj(
-            {"field_type": "transient_resource_link", "pred": "test-pred", "obj": "test-obj"}
+            {"link_type": "transient_resource_link", "pred": "test-pred", "obj": "test-obj"}
         )
         self.assertIsInstance(link, TransientResourceLinkLink)
 
     def testMultiType(self):
         link = Link.parse_obj(
             {
-                "field_type": "multi",
+                "link_type": "multi",
                 "pred": "test-pred",
-                "obj": [{"field_type": "simple", "pred": "test-int-pred", "obj": "test-int-obj"}],
+                "obj": [{"link_type": "simple", "pred": "test-int-pred", "obj": "test-int-obj"}],
             }
         )
         self.assertIsInstance(link, MultiLink)
@@ -65,7 +65,7 @@ class TestSimpleLink(unittest.TestCase):
         pred = "test-pred"
         obj = "test-obj"
         link = SimpleLink(pred=pred, obj=obj)
-        expected_link_dict = {"field_type": "simple", "pred": pred, "obj": obj}
+        expected_link_dict = {"link_type": "simple", "pred": pred, "obj": obj}
         link_dict = link.dict()
         self.assertDictEqual(expected_link_dict, link_dict)
 
@@ -175,11 +175,11 @@ class TestMultiLink(unittest.TestCase):
         expected_link_dict = {
             "pred": "test-multi-pred",
             "obj": [
-                {"pred": "test-simple-pred-1", "obj": "test-simple-obj-1", "field_type": "simple"},
-                {"pred": "test-simple-pred-1", "obj": "test-simple-obj-2", "field_type": "simple"},
-                {"pred": "test-simple-pred-2", "obj": "test-simple-obj-3", "field_type": "simple"},
+                {"pred": "test-simple-pred-1", "obj": "test-simple-obj-1", "link_type": "simple"},
+                {"pred": "test-simple-pred-1", "obj": "test-simple-obj-2", "link_type": "simple"},
+                {"pred": "test-simple-pred-2", "obj": "test-simple-obj-3", "link_type": "simple"},
             ],
-            "field_type": "multi",
+            "link_type": "multi",
         }
         link_dict = link.dict()
         self.assertDictEqual(expected_link_dict, link_dict)
@@ -236,7 +236,7 @@ class TestResourceLink(unittest.TestCase):
         pred = "test-pred"
         obj = "test-obj"
         link = ResourceLinkLink(pred=pred, obj=obj)
-        self.assertDictEqual(link.dict(), {"field_type": "resource_link", "pred": pred, "obj": obj})
+        self.assertDictEqual(link.dict(), {"link_type": "resource_link", "pred": pred, "obj": obj})
 
     def testToRdf(self):
         pred = "test-pred"
@@ -276,7 +276,7 @@ class TestTransientResourceLink(unittest.TestCase):
         obj = "test-obj"
         link = TransientResourceLinkLink(pred=pred, obj=obj)
         self.assertDictEqual(
-            link.dict(), {"field_type": "transient_resource_link", "pred": pred, "obj": obj}
+            link.dict(), {"link_type": "transient_resource_link", "pred": pred, "obj": obj}
         )
 
     def testToRdf(self):
@@ -317,7 +317,7 @@ class TestTagLink(unittest.TestCase):
         pred = "test-pred"
         obj = "test-obj"
         link = TagLink(pred=pred, obj=obj)
-        expected_link_dict = {"field_type": "tag", "pred": pred, "obj": obj}
+        expected_link_dict = {"link_type": "tag", "pred": pred, "obj": obj}
         link_dict = link.dict()
         self.assertDictEqual(expected_link_dict, link_dict)
 

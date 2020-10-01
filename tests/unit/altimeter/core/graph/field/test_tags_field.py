@@ -12,8 +12,8 @@ class TestTagsField(TestCase):
         )
         field = TagsField()
         expected_output_data = [
-            {"pred": "tag1", "obj": "value1", "field_type": "tag"},
-            {"pred": "tag2", "obj": "value2", "field_type": "tag"},
+            {"pred": "tag1", "obj": "value1", "link_type": "tag"},
+            {"pred": "tag2", "obj": "value2", "link_type": "tag"},
         ]
 
         input_data = json.loads(input_str)

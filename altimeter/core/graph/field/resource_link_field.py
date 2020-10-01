@@ -25,7 +25,7 @@ class ResourceLinkField(Field):
             >>> field = ResourceLinkField("ThingId", TestResourceSpec)
             >>> links = field.parse(data=input, context={})
             >>> print([link.dict() for link in links])
-            [{'pred': 'thing', 'obj': 'thing:123', 'field_type': 'resource_link'}]
+            [{'pred': 'thing', 'obj': 'thing:123', 'link_type': 'resource_link'}]
 
         A link to a TestResourceSpec resource using value_is_id::
             >>> from altimeter.core.resource.resource_spec import ResourceSpec
@@ -34,7 +34,7 @@ class ResourceLinkField(Field):
             >>> field = ResourceLinkField("ThingId", TestResourceSpec, value_is_id=True)
             >>> links = field.parse(data=input, context={})
             >>> print([link.dict() for link in links])
-            [{'pred': 'thing', 'obj': 'thing:123', 'field_type': 'resource_link'}]
+            [{'pred': 'thing', 'obj': 'thing:123', 'link_type': 'resource_link'}]
 
     Args:
         source_key: Name of the key in the input JSON
@@ -113,7 +113,7 @@ class EmbeddedResourceLinkField(SubField):
             >>> field = ListField("Thing", EmbeddedResourceLinkField(TestResourceSpec))
             >>> links = field.parse(data=input, context={})
             >>> print([link.dict() for link in links])
-            [{'pred': 'thing', 'obj': 'thing:123', 'field_type': 'resource_link'}, {'pred': 'thing', 'obj': 'thing:456', 'field_type': 'resource_link'}]
+            [{'pred': 'thing', 'obj': 'thing:123', 'link_type': 'resource_link'}, {'pred': 'thing', 'obj': 'thing:456', 'link_type': 'resource_link'}]
 
     Args:
         resource_spec_class: The name of the ResourceSpec class or the ResourceSpec class which
@@ -186,7 +186,7 @@ class TransientResourceLinkField(Field):
             >>> field = TransientResourceLinkField("ThingId", TestResourceSpec)
             >>> links = field.parse(data=input, context={})
             >>> print([link.dict() for link in links])
-            [{'pred': 'thing', 'obj': 'thing:123', 'field_type': 'transient_resource_link'}]
+            [{'pred': 'thing', 'obj': 'thing:123', 'link_type': 'transient_resource_link'}]
     """
 
     def __init__(

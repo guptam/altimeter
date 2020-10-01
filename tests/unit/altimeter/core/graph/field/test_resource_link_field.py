@@ -35,7 +35,7 @@ class TestResourceLinkField(TestCase):
         input_str = '{"FieldName": "Value"}'
         field = ResourceLinkField("FieldName", TestResourceSpec)
         expected_output_data = [
-            {"pred": "test_type_name", "obj": "test_type_name:Value", "field_type": "resource_link"}
+            {"pred": "test_type_name", "obj": "test_type_name:Value", "link_type": "resource_link"}
         ]
 
         input_data = json.loads(input_str)
@@ -47,7 +47,7 @@ class TestResourceLinkField(TestCase):
         input_str = '{"FieldName": "Value"}'
         field = ResourceLinkField("FieldName", "TestResourceSpec")
         expected_output_data = [
-            {"pred": "test_type_name", "obj": "test_type_name:Value", "field_type": "resource_link"}
+            {"pred": "test_type_name", "obj": "test_type_name:Value", "link_type": "resource_link"}
         ]
 
         input_data = json.loads(input_str)
@@ -59,7 +59,7 @@ class TestResourceLinkField(TestCase):
         input_str = '{"FieldName": "Value"}'
         field = ResourceLinkField("FieldName", TestResourceSpec, alti_key="alti_field_name")
         expected_output_data = [
-            {"pred": "alti_field_name", "obj": "test_type_name:Value", "field_type": "resource_link"}
+            {"pred": "alti_field_name", "obj": "test_type_name:Value", "link_type": "resource_link"}
         ]
 
         input_data = json.loads(input_str)
@@ -71,7 +71,7 @@ class TestResourceLinkField(TestCase):
         input_str = '{"FieldName": "Value"}'
         field = ResourceLinkField("FieldName", TestResourceSpec, optional=True)
         expected_output_data = [
-            {"pred": "test_type_name", "obj": "test_type_name:Value", "field_type": "resource_link"}
+            {"pred": "test_type_name", "obj": "test_type_name:Value", "link_type": "resource_link"}
         ]
 
         input_data = json.loads(input_str)
@@ -108,7 +108,7 @@ class TestResourceLinkField(TestCase):
     def test_value_is_id(self):
         input_str = '{"FieldName": "Value"}'
         field = ResourceLinkField("FieldName", TestResourceSpec, value_is_id=True)
-        expected_output_data = [{"pred": "test_type_name", "obj": "Value", "field_type": "resource_link"}]
+        expected_output_data = [{"pred": "test_type_name", "obj": "Value", "link_type": "resource_link"}]
 
         input_data = json.loads(input_str)
         links = field.parse(data=input_data, context={})
@@ -121,7 +121,7 @@ class TestEmbeddedResourceLinkField(TestCase):
         input_data = "foo"
         field = EmbeddedResourceLinkField(TestResourceSpec)
         expected_output_data = [
-            {"pred": "test_type_name", "obj": "test_type_name:foo", "field_type": "resource_link"}
+            {"pred": "test_type_name", "obj": "test_type_name:foo", "link_type": "resource_link"}
         ]
 
         links = field.parse(data=input_data, context={})
@@ -132,7 +132,7 @@ class TestEmbeddedResourceLinkField(TestCase):
         input_data = "foo"
         field = EmbeddedResourceLinkField("TestResourceSpec")
         expected_output_data = [
-            {"pred": "test_type_name", "obj": "test_type_name:foo", "field_type": "resource_link"}
+            {"pred": "test_type_name", "obj": "test_type_name:foo", "link_type": "resource_link"}
         ]
 
         links = field.parse(data=input_data, context={})
@@ -142,7 +142,7 @@ class TestEmbeddedResourceLinkField(TestCase):
     def test_valid_input_value_is_id(self):
         input_data = "foo"
         field = EmbeddedResourceLinkField("TestResourceSpec", value_is_id=True)
-        expected_output_data = [{"pred": "test_type_name", "obj": "foo", "field_type": "resource_link"}]
+        expected_output_data = [{"pred": "test_type_name", "obj": "foo", "link_type": "resource_link"}]
 
         links = field.parse(data=input_data, context={})
         output_data = [link.dict() for link in links]

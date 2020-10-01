@@ -23,9 +23,9 @@ class ListField(Field):
             >>> field = ListField("Animals", EmbeddedScalarField())
             >>> links = field.parse(data=input, context={})
             >>> for link in links: print(link.dict())
-            {'pred': 'animals', 'obj': 'cow', 'field_type': 'simple'}
-            {'pred': 'animals', 'obj': 'pig', 'field_type': 'simple'}
-            {'pred': 'animals', 'obj': 'human', 'field_type': 'simple'}
+            {'pred': 'animals', 'obj': 'cow', 'link_type': 'simple'}
+            {'pred': 'animals', 'obj': 'pig', 'link_type': 'simple'}
+            {'pred': 'animals', 'obj': 'human', 'link_type': 'simple'}
 
         A list of dicts:
             >>> from altimeter.core.graph.field.dict_field import EmbeddedDictField
@@ -40,11 +40,11 @@ class ListField(Field):
             ...      print(obj.dict())
             ...
             people
-            {'pred': 'name', 'obj': 'Bob', 'field_type': 'simple'}
-            {'pred': 'age', 'obj': 49, 'field_type': 'simple'}
+            {'pred': 'name', 'obj': 'Bob', 'link_type': 'simple'}
+            {'pred': 'age', 'obj': 49, 'link_type': 'simple'}
             people
-            {'pred': 'name', 'obj': 'Sue', 'field_type': 'simple'}
-            {'pred': 'age', 'obj': 42, 'field_type': 'simple'}
+            {'pred': 'name', 'obj': 'Sue', 'link_type': 'simple'}
+            {'pred': 'age', 'obj': 42, 'link_type': 'simple'}
 
     Args:
         source_key: Name of the key in the input JSON
@@ -131,7 +131,7 @@ class AnonymousListField(Field):
             >>> field = DictField("Biota", AnonymousListField("Animals", EmbeddedScalarField()))
             >>> links = field.parse(data=input, context={})
             >>> for link in links: print(link.dict())
-            {'pred': 'biota', 'obj': [{'pred': 'biota', 'obj': 'cow', 'field_type': 'simple'}, {'pred': 'biota', 'obj': 'pig', 'field_type': 'simple'}, {'pred': 'biota', 'obj': 'human', 'field_type': 'simple'}], 'field_type': 'multi'}
+            {'pred': 'biota', 'obj': [{'pred': 'biota', 'obj': 'cow', 'link_type': 'simple'}, {'pred': 'biota', 'obj': 'pig', 'link_type': 'simple'}, {'pred': 'biota', 'obj': 'human', 'link_type': 'simple'}], 'link_type': 'multi'}
     """
 
     def __init__(

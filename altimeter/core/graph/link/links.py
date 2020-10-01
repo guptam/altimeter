@@ -14,7 +14,7 @@ class SimpleLink(Link):
 
     pred: str
     obj: Any
-    field_type = "simple"
+    link_type = "simple"
 
     def to_rdf(
         self, subj: BNode, namespace: Namespace, graph: Graph, node_cache: NodeCache
@@ -63,7 +63,7 @@ class MultiLink(Link):
 
     pred: str
     obj: Any
-    field_type = "multi"
+    link_type = "multi"
 
     def to_rdf(
         self, subj: BNode, namespace: Namespace, graph: Graph, node_cache: NodeCache
@@ -104,7 +104,7 @@ class ResourceLinkLink(Link):
 
     pred: str
     obj: Any
-    field_type = "resource_link"
+    link_type = "resource_link"
 
     def to_rdf(
         self, subj: BNode, namespace: Namespace, graph: Graph, node_cache: NodeCache
@@ -134,7 +134,7 @@ class ResourceLinkLink(Link):
         """
         edge = {
             "~id": uuid.uuid1(),
-            "~label": self.field_type,
+            "~label": self.link_type,
             "~from": parent["~id"],
             "~to": self.obj,
         }
@@ -146,7 +146,7 @@ class TransientResourceLinkLink(Link):
 
     pred: str
     obj: Any
-    field_type = "transient_resource_link"
+    link_type = "transient_resource_link"
 
     def to_rdf(
         self, subj: BNode, namespace: Namespace, graph: Graph, node_cache: NodeCache
@@ -176,7 +176,7 @@ class TransientResourceLinkLink(Link):
         """
         edge = {
             "~id": uuid.uuid1(),
-            "~label": self.field_type,
+            "~label": self.link_type,
             "~from": parent["~id"],
             "~to": self.obj,
         }
@@ -188,7 +188,7 @@ class TagLink(Link):
 
     pred: str
     obj: str
-    field_type = "tag"
+    link_type = "tag"
 
     def to_rdf(
         self, subj: BNode, namespace: Namespace, graph: Graph, node_cache: NodeCache
@@ -226,7 +226,7 @@ class TagLink(Link):
         if not any(x["~id"] == f"{self.pred}:{self.obj}" for x in vertices):
             vertex = {}
             vertex["~id"] = f"{self.pred}:{self.obj}"
-            vertex["~label"] = self.field_type
+            vertex["~label"] = self.link_type
             vertex[self.pred] = self.obj
             vertices.append(vertex)
         edge = {

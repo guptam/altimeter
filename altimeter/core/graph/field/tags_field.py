@@ -18,9 +18,9 @@ class TagsField(Field):
         >>> field = TagsField()
         >>> links = field.parse(data=input, context={})
         >>> print(links[0].dict())
-        {'pred': 'Name', 'obj': 'Jerry', 'field_type': 'tag'}
+        {'pred': 'Name', 'obj': 'Jerry', 'link_type': 'tag'}
         >>> print(links[1].dict())
-        {'pred': 'DOB', 'obj': '1942-08-01', 'field_type': 'tag'}
+        {'pred': 'DOB', 'obj': '1942-08-01', 'link_type': 'tag'}
 
     Args:
         optional: Whether this key is optional. Defaults to False.

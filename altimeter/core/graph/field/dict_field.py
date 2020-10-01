@@ -24,7 +24,7 @@ class DictField(Field):
             >>> field = DictField("Person", ScalarField("FirstName"), ScalarField("LastName"))
             >>> links = field.parse(data=input, context={})
             >>> print([link.dict() for link in links])
-            [{'pred': 'person', 'obj': [{'pred': 'first_name', 'obj': 'Bob', 'field_type': 'simple'}, {'pred': 'last_name', 'obj': 'Smith', 'field_type': 'simple'}], 'field_type': 'multi'}]
+            [{'pred': 'person', 'obj': [{'pred': 'first_name', 'obj': 'Bob', 'link_type': 'simple'}, {'pred': 'last_name', 'obj': 'Smith', 'link_type': 'simple'}], 'link_type': 'multi'}]
 
     Args:
         source_key: Name of the key in the input JSON
@@ -97,8 +97,8 @@ class AnonymousDictField(Field):
             >>> field = AnonymousDictField("Person", ScalarField("FirstName"), ScalarField("LastName"))
             >>> links = field.parse(data=input, context={})
             >>> for link in links: print(link.dict())
-            {'pred': 'first_name', 'obj': 'Bob', 'field_type': 'simple'}
-            {'pred': 'last_name', 'obj': 'Smith', 'field_type': 'simple'}
+            {'pred': 'first_name', 'obj': 'Bob', 'link_type': 'simple'}
+            {'pred': 'last_name', 'obj': 'Smith', 'link_type': 'simple'}
     """
 
     def __init__(
@@ -168,8 +168,8 @@ class EmbeddedDictField(SubField):
                                   ScalarField("LastName")))
             >>> links = field.parse(data=input, context={})
             >>> for link in links: print(link.dict())
-            {'pred': 'people', 'obj': [{'pred': 'first_name', 'obj': 'Bob', 'field_type': 'simple'}, {'pred': 'last_name', 'obj': 'Smith', 'field_type': 'simple'}], 'field_type': 'multi'}
-            {'pred': 'people', 'obj': [{'pred': 'first_name', 'obj': 'Alice', 'field_type': 'simple'}, {'pred': 'last_name', 'obj': 'Smith', 'field_type': 'simple'}], 'field_type': 'multi'}
+            {'pred': 'people', 'obj': [{'pred': 'first_name', 'obj': 'Bob', 'link_type': 'simple'}, {'pred': 'last_name', 'obj': 'Smith', 'link_type': 'simple'}], 'link_type': 'multi'}
+            {'pred': 'people', 'obj': [{'pred': 'first_name', 'obj': 'Alice', 'link_type': 'simple'}, {'pred': 'last_name', 'obj': 'Smith', 'link_type': 'simple'}], 'link_type': 'multi'}
     """
 
     def __init__(self, *fields: Field) -> None:
@@ -219,10 +219,10 @@ class AnonymousEmbeddedDictField(Field):
                                   ScalarField("LastName")))
             >>> links = field.parse(data=input, context={})
             >>> for link in links: print(link.dict())
-            {'pred': 'first_name', 'obj': 'Bob', 'field_type': 'simple'}
-            {'pred': 'last_name', 'obj': 'Smith', 'field_type': 'simple'}
-            {'pred': 'first_name', 'obj': 'Alice', 'field_type': 'simple'}
-            {'pred': 'last_name', 'obj': 'Smith', 'field_type': 'simple'}
+            {'pred': 'first_name', 'obj': 'Bob', 'link_type': 'simple'}
+            {'pred': 'last_name', 'obj': 'Smith', 'link_type': 'simple'}
+            {'pred': 'first_name', 'obj': 'Alice', 'link_type': 'simple'}
+            {'pred': 'last_name', 'obj': 'Smith', 'link_type': 'simple'}
     """
 
     def __init__(self, *fields: Field) -> None:

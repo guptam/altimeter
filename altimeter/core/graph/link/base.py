@@ -11,7 +11,7 @@ from altimeter.core.graph.link import links as Links
 
 class Link(BaseAltiModel):
     """A Link represents the predicate-object portion of a triple.
-    Links in general have a field_type which describes the nature of the relationship.
+    Links in general have a link_type which describes the nature of the relationship.
 
     Args:
         pred: predicate portion of the triple this Link represents
@@ -20,7 +20,7 @@ class Link(BaseAltiModel):
 
     pred: str
     obj: Any
-    field_type: str
+    link_type: str
 
     def to_rdf(
         self, subj: BNode, namespace: Namespace, graph: Graph, node_cache: NodeCache
@@ -52,23 +52,23 @@ class Link(BaseAltiModel):
     def parse_obj(cls, data: Dict[str, Any]) -> "Link":
         if cls != Link:
             return super().parse_obj(data)
-        field_type = data.get("field_type")
-        if field_type is None:
+        link_type = data.get("link_type")
+        if link_type is None:
             raise LinkParseException(f"key 'type' not found in {data}")
         pred = data.get("pred")
         if pred is None:
             raise LinkParseException(f"key 'pred' not found in {data}")
         obj = data.get("obj")
-        if field_type == "transient_resource_link":
+        if link_type == "transient_resource_link":
             return Links.TransientResourceLinkLink.parse_obj(data)
         if obj is None:
             raise LinkParseException(f"key 'obj' not found in {data}")
-        if field_type == "simple":
+        if link_type == "simple":
             return Links.SimpleLink.parse_obj(data)
-        if field_type == "multi":
+        if link_type == "multi":
             return Links.MultiLink.parse_obj(data)
-        if field_type == "resource_link":
+        if link_type == "resource_link":
             return Links.ResourceLinkLink.parse_obj(data)
-        if field_type == "tag":
+        if link_type == "tag":
             return Links.TagLink.parse_obj(data)
-        raise LinkParseException(f"Unknown field type '{field_type}")
+        raise LinkParseException(f"Unknown field type '{link_type}")

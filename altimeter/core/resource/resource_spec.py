@@ -197,9 +197,9 @@ class ResourceSpec(abc.ABC):
             for link in duplicate_resource.links:
                 duplicate_link = merged_link_keys_links.get(link.pred)
                 if duplicate_link:
-                    if duplicate_link.field_type != link.field_type:
+                    if duplicate_link.link_type != link.link_type:
                         raise UnmergableDuplicateResourceIdsFoundException(
-                            f"Conflicting link types {link.field_type}, {duplicate_link.field_type} found in duplicate #s {resources}"
+                            f"Conflicting link types {link.link_type}, {duplicate_link.link_type} found in duplicate #s {resources}"
                         )
                     if duplicate_link.obj != link.obj:
                         raise UnmergableDuplicateResourceIdsFoundException(

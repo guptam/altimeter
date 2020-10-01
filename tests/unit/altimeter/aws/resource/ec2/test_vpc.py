@@ -37,22 +37,22 @@ class TestVPCResourceSpec(TestCase):
                 "resource_id": moto_vpc_arn,
                 "resource_type": "aws:ec2:vpc",
                 "links": [
-                    {"pred": "is_default", "obj": True, "field_type": "simple"},
+                    {"pred": "is_default", "obj": True, "link_type": "simple"},
                     {
                         "pred": "cidr_block",
                         "obj": "172.31.0.0/16",
-                        "field_type": "simple",
+                        "link_type": "simple",
                     },  # from moto
-                    {"pred": "state", "obj": "available", "field_type": "simple"},
+                    {"pred": "state", "obj": "available", "link_type": "simple"},
                     {
                         "pred": "account",
                         "obj": "arn:aws::::account/123456789012",
-                        "field_type": "resource_link",
+                        "link_type": "resource_link",
                     },
                     {
                         "pred": "region",
                         "obj": "arn:aws:::123456789012:region/us-east-1",
-                        "field_type": "resource_link",
+                        "link_type": "resource_link",
                     },
                 ],
             },
@@ -60,18 +60,18 @@ class TestVPCResourceSpec(TestCase):
                 "resource_id": vpc_arn,
                 "resource_type": "aws:ec2:vpc",
                 "links": [
-                    {"pred": "is_default", "obj": False, "field_type": "simple"},
-                    {"pred": "cidr_block", "obj": "10.0.0.0/16", "field_type": "simple"},
-                    {"pred": "state", "obj": "available", "field_type": "simple"},
+                    {"pred": "is_default", "obj": False, "link_type": "simple"},
+                    {"pred": "cidr_block", "obj": "10.0.0.0/16", "link_type": "simple"},
+                    {"pred": "state", "obj": "available", "link_type": "simple"},
                     {
                         "pred": "account",
                         "obj": "arn:aws::::account/123456789012",
-                        "field_type": "resource_link",
+                        "link_type": "resource_link",
                     },
                     {
                         "pred": "region",
                         "obj": "arn:aws:::123456789012:region/us-east-1",
-                        "field_type": "resource_link",
+                        "link_type": "resource_link",
                     },
                 ],
             },

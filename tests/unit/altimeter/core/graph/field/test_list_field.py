@@ -15,9 +15,9 @@ class TestListField(TestCase):
         input_str = '{"Animals": ["cow", "pig", "human"]}'
         field = ListField("Animals", EmbeddedScalarField())
         expected_output_data = [
-            {"pred": "animals", "obj": "cow", "field_type": "simple"},
-            {"pred": "animals", "obj": "pig", "field_type": "simple"},
-            {"pred": "animals", "obj": "human", "field_type": "simple"},
+            {"pred": "animals", "obj": "cow", "link_type": "simple"},
+            {"pred": "animals", "obj": "pig", "link_type": "simple"},
+            {"pred": "animals", "obj": "human", "link_type": "simple"},
         ]
 
         input_data = json.loads(input_str)
@@ -32,18 +32,18 @@ class TestListField(TestCase):
             {
                 "pred": "people",
                 "obj": [
-                    {"pred": "name", "obj": "Bob", "field_type": "simple"},
-                    {"pred": "age", "obj": 49, "field_type": "simple"},
+                    {"pred": "name", "obj": "Bob", "link_type": "simple"},
+                    {"pred": "age", "obj": 49, "link_type": "simple"},
                 ],
-                "field_type": "multi",
+                "link_type": "multi",
             },
             {
                 "pred": "people",
                 "obj": [
-                    {"pred": "name", "obj": "Sue", "field_type": "simple"},
-                    {"pred": "age", "obj": 42, "field_type": "simple"},
+                    {"pred": "name", "obj": "Sue", "link_type": "simple"},
+                    {"pred": "age", "obj": 42, "link_type": "simple"},
                 ],
-                "field_type": "multi",
+                "link_type": "multi",
             },
         ]
 
@@ -61,18 +61,18 @@ class TestListField(TestCase):
             {
                 "pred": "person",
                 "obj": [
-                    {"pred": "name", "obj": "Bob", "field_type": "simple"},
-                    {"pred": "age", "obj": 49, "field_type": "simple"},
+                    {"pred": "name", "obj": "Bob", "link_type": "simple"},
+                    {"pred": "age", "obj": 49, "link_type": "simple"},
                 ],
-                "field_type": "multi",
+                "link_type": "multi",
             },
             {
                 "pred": "person",
                 "obj": [
-                    {"pred": "name", "obj": "Sue", "field_type": "simple"},
-                    {"pred": "age", "obj": 42, "field_type": "simple"},
+                    {"pred": "name", "obj": "Sue", "link_type": "simple"},
+                    {"pred": "age", "obj": 42, "link_type": "simple"},
                 ],
-                "field_type": "multi",
+                "link_type": "multi",
             },
         ]
 
@@ -112,7 +112,7 @@ class TestListField(TestCase):
     def test_allow_scalar(self):
         input_str = '{"People": "bob"}'
         field = ListField("People", EmbeddedScalarField(), alti_key="person", allow_scalar=True)
-        expected_output_data = ({"pred": "person", "obj": "bob", "field_type": "simple"},)
+        expected_output_data = ({"pred": "person", "obj": "bob", "link_type": "simple"},)
 
         input_data = json.loads(input_str)
         links = field.parse(data=input_data, context={})
@@ -128,11 +128,11 @@ class TestAnonymousListField(TestCase):
             {
                 "pred": "biota",
                 "obj": [
-                    {"pred": "biota", "obj": "cow", "field_type": "simple"},
-                    {"pred": "biota", "obj": "pig", "field_type": "simple"},
-                    {"pred": "biota", "obj": "human", "field_type": "simple"},
+                    {"pred": "biota", "obj": "cow", "link_type": "simple"},
+                    {"pred": "biota", "obj": "pig", "link_type": "simple"},
+                    {"pred": "biota", "obj": "human", "link_type": "simple"},
                 ],
-                "field_type": "multi",
+                "link_type": "multi",
             }
         ]
 
@@ -158,21 +158,21 @@ class TestAnonymousListField(TestCase):
                     {
                         "pred": "biota",
                         "obj": [
-                            {"pred": "name", "obj": "Bob", "field_type": "simple"},
-                            {"pred": "age", "obj": 49, "field_type": "simple"},
+                            {"pred": "name", "obj": "Bob", "link_type": "simple"},
+                            {"pred": "age", "obj": 49, "link_type": "simple"},
                         ],
-                        "field_type": "multi",
+                        "link_type": "multi",
                     },
                     {
                         "pred": "biota",
                         "obj": [
-                            {"pred": "name", "obj": "Sue", "field_type": "simple"},
-                            {"pred": "age", "obj": 42, "field_type": "simple"},
+                            {"pred": "name", "obj": "Sue", "link_type": "simple"},
+                            {"pred": "age", "obj": 42, "link_type": "simple"},
                         ],
-                        "field_type": "multi",
+                        "link_type": "multi",
                     },
                 ],
-                "field_type": "multi",
+                "link_type": "multi",
             }
         ]
 
@@ -204,7 +204,7 @@ class TestAnonymousListField(TestCase):
         field = DictField(
             "Biota", AnonymousListField("Animals", EmbeddedScalarField(), optional=True)
         )
-        expected_output_data = [{"pred": "biota", "obj": [], "field_type": "multi"}]
+        expected_output_data = [{"pred": "biota", "obj": [], "link_type": "multi"}]
 
         input_data = json.loads(input_str)
         links = field.parse(data=input_data, context={})
@@ -219,8 +219,8 @@ class TestAnonymousListField(TestCase):
         expected_output_data = [
             {
                 "pred": "biota",
-                "obj": [{"pred": "biota", "obj": "tree", "field_type": "simple"}],
-                "field_type": "multi",
+                "obj": [{"pred": "biota", "obj": "tree", "link_type": "simple"}],
+                "link_type": "multi",
             }
         ]
 

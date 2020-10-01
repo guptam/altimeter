@@ -45,13 +45,13 @@ class TestVpcEndpointResourceSpec(unittest.TestCase):
             "resource_id": "arn:aws:ec2:us-east-2:111122223333:vpc-endpoint/vpce-01dec98cb17ac542",
             "resource_type": "vpc-endpoint",
             "links": [
-                {"pred": "vpc_endpoint_type", "obj": "Gateway", "field_type": "simple"},
-                {"pred": "service_name", "obj": "com.amazonaws.us-west-2.s3", "field_type": "simple"},
-                {"pred": "state", "obj": "available", "field_type": "simple"},
+                {"pred": "vpc_endpoint_type", "obj": "Gateway", "link_type": "simple"},
+                {"pred": "service_name", "obj": "com.amazonaws.us-west-2.s3", "link_type": "simple"},
+                {"pred": "state", "obj": "available", "link_type": "simple"},
                 {
                     "pred": "vpc",
                     "obj": "arn:aws:ec2:us-west-2:111122223333:vpc/vpc-075db863045facc8e",
-                    "field_type": "resource_link",
+                    "link_type": "resource_link",
                 },
             ],
         }

@@ -21,7 +21,7 @@ class TestEBSVolumeResourceSpec(TestCase):
             {
                 "resource_id": "arn:aws::::account/123456789012",
                 "resource_type": "aws:account",
-                "links": [{"pred": "account_id", "obj": "123456789012", "field_type": "simple"}],
+                "links": [{"pred": "account_id", "obj": "123456789012", "link_type": "simple"}],
             }
         ]
         expected_api_call_stats = {
