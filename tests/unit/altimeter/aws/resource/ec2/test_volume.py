@@ -18,13 +18,16 @@ class TestEBSVolumeResourceSpec(TestCase):
         ec2_client = session.client("ec2", region_name=region_name)
         resp = ec2_client.create_volume(Size=1, AvailabilityZone="us-east-1a")
         create_time = resp["CreateTime"]
+        volume_id = resp["VolumeId"]
+        volume_arn = f"arn:aws:ec2:us-east-1:123456789012:volume/{volume_id}"
 
         scan_accessor = AWSAccessor(session=session, account_id=account_id, region_name=region_name)
         resources = EBSVolumeResourceSpec.scan(scan_accessor=scan_accessor)
 
         expected_resources = [
             {
-                "type": "aws:ec2:volume",
+                "resource_id": volume_arn,
+                "resource_type": "aws:ec2:volume",
                 "links": [
                     {"pred": "availability_zone", "obj": "us-east-1a", "field_type": "simple"},
                     {"pred": "create_time", "obj": create_time, "field_type": "simple"},
@@ -53,5 +56,5 @@ class TestEBSVolumeResourceSpec(TestCase):
                 "us-east-1": {"count": 1, "ec2": {"count": 1, "DescribeVolumes": {"count": 1}}},
             },
         }
-        self.assertListEqual([resource.to_dict() for resource in resources], expected_resources)
+        self.assertListEqual([resource.dict() for resource in resources], expected_resources)
         self.assertDictEqual(scan_accessor.api_call_stats.to_dict(), expected_api_call_stats)

@@ -221,6 +221,8 @@ class AWSResourceSpec(ResourceSpec):
                             obj=f"arn:aws:::{resource_account_id}:region/{resource_region_name}",
                         )
                         links.append(region_link)
-            resource = Resource(resource_id=arn, type_name=cls.get_full_type_name(), links=links)
+            resource = Resource(
+                resource_id=arn, resource_type=cls.get_full_type_name(), links=links
+            )
             resources.append(resource)
         return resources

@@ -16,14 +16,26 @@ class TestVPCResourceSpec(TestCase):
         session = boto3.Session()
 
         ec2_client = session.client("ec2", region_name=region_name)
-        ec2_client.create_vpc(CidrBlock="10.0.0.0/16")
+
+        # find the moto vpc id, it's random
+        list_resp = ec2_client.describe_vpcs()
+        moto_vpcs = list_resp["Vpcs"]
+        self.assertEqual(len(moto_vpcs), 1)
+        moto_vpc_id = moto_vpcs[0]["VpcId"]
+        moto_vpc_arn = f"arn:aws:ec2:us-east-1:123456789012:vpc/{moto_vpc_id}"
+
+
+        vpc_resp = ec2_client.create_vpc(CidrBlock="10.0.0.0/16")
+        vpc_id = vpc_resp["Vpc"]["VpcId"]
+        vpc_arn = f"arn:aws:ec2:us-east-1:123456789012:vpc/{vpc_id}"
 
         scan_accessor = AWSAccessor(session=session, account_id=account_id, region_name=region_name)
         resources = VPCResourceSpec.scan(scan_accessor=scan_accessor)
 
         expected_resources = [
             {
-                "type": "aws:ec2:vpc",
+                "resource_id": moto_vpc_arn,
+                "resource_type": "aws:ec2:vpc",
                 "links": [
                     {"pred": "is_default", "obj": True, "field_type": "simple"},
                     {
@@ -45,7 +57,8 @@ class TestVPCResourceSpec(TestCase):
                 ],
             },
             {
-                "type": "aws:ec2:vpc",
+                "resource_id": vpc_arn,
+                "resource_type": "aws:ec2:vpc",
                 "links": [
                     {"pred": "is_default", "obj": False, "field_type": "simple"},
                     {"pred": "cidr_block", "obj": "10.0.0.0/16", "field_type": "simple"},
@@ -70,5 +83,6 @@ class TestVPCResourceSpec(TestCase):
                 "us-east-1": {"count": 1, "ec2": {"count": 1, "DescribeVpcs": {"count": 1}}},
             },
         }
-        self.assertListEqual([resource.to_dict() for resource in resources], expected_resources)
+        self.maxDiff = None
+        self.assertListEqual([resource.dict() for resource in resources], expected_resources)
         self.assertDictEqual(scan_accessor.api_call_stats.to_dict(), expected_api_call_stats)

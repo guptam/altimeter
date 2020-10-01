@@ -17,8 +17,8 @@ class TestResourceSpecA(ResourceSpec):
     @classmethod
     def scan(cls: Type["TestResourceSpecA"], scan_accessor: Any) -> List[Resource]:
         resources = [
-            Resource(resource_id="123", type_name=cls.type_name, links=[]),
-            Resource(resource_id="456", type_name=cls.type_name, links=[]),
+            Resource(resource_id="123", resource_type=cls.type_name, links=[]),
+            Resource(resource_id="456", resource_type=cls.type_name, links=[]),
         ]
         return resources
 
@@ -34,8 +34,8 @@ class TestResourceSpecB(ResourceSpec):
     @classmethod
     def scan(cls: Type["TestResourceSpecB"], scan_accessor: Any) -> List[Resource]:
         resources = [
-            Resource(resource_id="abc", type_name=cls.type_name, links=[]),
-            Resource(resource_id="def", type_name=cls.type_name, links=[]),
+            Resource(resource_id="abc", resource_type=cls.type_name, links=[]),
+            Resource(resource_id="def", resource_type=cls.type_name, links=[]),
         ]
         return resources
 
@@ -55,11 +55,11 @@ class TestGraphSpec(TestCase):
         )
         resources = graph_spec.scan()
         expected_resource_dicts = [
-            Resource(resource_id="123", type_name=TestResourceSpecA.type_name).to_dict(),
-            Resource(resource_id="456", type_name=TestResourceSpecA.type_name).to_dict(),
-            Resource(resource_id="abc", type_name=TestResourceSpecB.type_name).to_dict(),
-            Resource(resource_id="def", type_name=TestResourceSpecB.type_name).to_dict(),
+            Resource(resource_id="123", resource_type=TestResourceSpecA.type_name).dict(),
+            Resource(resource_id="456", resource_type=TestResourceSpecA.type_name).dict(),
+            Resource(resource_id="abc", resource_type=TestResourceSpecB.type_name).dict(),
+            Resource(resource_id="def", resource_type=TestResourceSpecB.type_name).dict(),
         ]
         self.assertCountEqual(
-            [resource.to_dict() for resource in resources], expected_resource_dicts
+            [resource.dict() for resource in resources], expected_resource_dicts
         )

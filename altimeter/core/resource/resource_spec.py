@@ -152,7 +152,7 @@ class ResourceSpec(abc.ABC):
         Raises:
             UnmergableDuplicateResourceIdsFoundException if resources could not be merged.
         """
-        full_type_names = {resource.type_name for resource in resources}
+        full_type_names = {resource.resource_type for resource in resources}
         if len(full_type_names) > 1:
             # in this case conflicting resources have different full_type_names, this
             # can be a permissible if allow_clobber is used. Here we determine this by
@@ -168,7 +168,7 @@ class ResourceSpec(abc.ABC):
                 Type[ResourceSpec], Set[Type[ResourceSpec]]
             ] = defaultdict(set)
             for resource in resources:
-                full_type_name = resource.type_name
+                full_type_name = resource.resource_type
                 spec_classes: List[Type[ResourceSpec]] = ResourceSpec.get_by_full_type_name(
                     full_type_name
                 )
@@ -186,11 +186,11 @@ class ResourceSpec(abc.ABC):
                     (
                         f"Multiple resources for {resource_id} with "
                         f"different types that aren't clobberable: "
-                        f"{[resource.to_dict() for resource in resources]}"
+                        f"{[resource.dict() for resource in resources]}"
                     )
                 )
             resources = spec_classes_resources[winning_class]
-        full_type_names = {resource.type_name for resource in resources}
+        full_type_names = {resource.resource_type for resource in resources}
         merged_resource_type_name = full_type_names.pop()
         merged_link_keys_links: Dict[str, Link] = {}
         for duplicate_resource in resources:
@@ -209,7 +209,7 @@ class ResourceSpec(abc.ABC):
                     merged_link_keys_links[link.pred] = link
         merged_links = list(merged_link_keys_links.values())
         return Resource(
-            resource_id=resource_id, type_name=merged_resource_type_name, links=merged_links
+            resource_id=resource_id, resource_type=merged_resource_type_name, links=merged_links
         )
 
 

@@ -30,13 +30,14 @@ class TestTransitGatewayVpcAttachmentSchema(unittest.TestCase):
         )
         resource = Resource(
             resource_id=resource_arn,
-            type_name=TransitGatewayVpcAttachmentResourceSpec.type_name,
+            resource_type=TransitGatewayVpcAttachmentResourceSpec.type_name,
             links=links,
         )
-        alti_resource_dict = resource.to_dict()
+        alti_resource_dict = resource.dict()
 
         expected_alti_resource_dict = {
-            "type": "transit-gateway-vpc-attachment",
+            "resource_id": "arn:aws:ec2:us-east-2:111122223333:transit-gateway-vpc-attachment/tgw-attach-09ece7878ee9ab7a4",
+            "resource_type": "transit-gateway-vpc-attachment",
             "links": [
                 {
                     "pred": "transit_gateway_attachment_id",

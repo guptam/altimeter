@@ -230,6 +230,9 @@ class TagLink(Link):
 
 
 def link_from_dict(data: Dict[str, Any]) -> Link:
+    # TODO LEFT OFF HERE - we probably need to move this into the base Link class or something.
+    # this could get pretty tricky, probably want to start doing scans locally to see what
+    # is breaking.
     """Create and return a Link subclass object from dict data.
 
     Args:

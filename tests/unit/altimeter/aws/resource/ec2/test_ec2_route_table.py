@@ -52,12 +52,13 @@ class TestRouteTableSchema(unittest.TestCase):
             data=aws_resource_dict, context={"account_id": "111122223333", "region": "us-west-2"}
         )
         resource = Resource(
-            resource_id=resource_arn, type_name=EC2RouteTableResourceSpec.type_name, links=links
+            resource_id=resource_arn, resource_type=EC2RouteTableResourceSpec.type_name, links=links
         )
-        alti_resource_dict = resource.to_dict()
+        alti_resource_dict = resource.dict()
 
         expected_alti_resource_dict = {
-            "type": "route-table",
+            "resource_id": "arn:aws:ec2:us-east-2:111122223333:route-table/rtb-099c7b032f2bbddda",
+            "resource_type": "route-table",
             "links": [
                 {"pred": "route_table_id", "obj": "rtb-099c7b032f2bbddda", "field_type": "simple"},
                 {

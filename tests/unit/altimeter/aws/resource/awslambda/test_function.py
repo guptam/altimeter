@@ -36,7 +36,7 @@ class TestLambdaFunctionResourceSpec(TestCase):
         iam_role_arn = iam_role_resp["Role"]["Arn"]
 
         lambda_client = session.client("lambda", region_name=region_name)
-        lambda_client.create_function(
+        lambda_resp = lambda_client.create_function(
             FunctionName="func_name",
             Runtime="python3.7",
             Role=iam_role_arn,
@@ -54,6 +54,7 @@ class TestLambdaFunctionResourceSpec(TestCase):
             Tags={"tagkey1": "tagval1", "tagkey2": "tagval2"},
             Layers=["test_layer1"],
         )
+        lambda_arn = lambda_resp["FunctionArn"]
 
         scan_accessor = AWSAccessor(session=session, account_id=account_id, region_name=region_name)
         resources = LambdaFunctionResourceSpec.scan(scan_accessor=scan_accessor)
@@ -61,7 +62,8 @@ class TestLambdaFunctionResourceSpec(TestCase):
         self.maxDiff=None
         expected_resources = [
             {
-                "type": "aws:lambda:function",
+                "resource_id": lambda_arn,
+                "resource_type": "aws:lambda:function",
                 "links": [
                     {"pred": "function_name", "obj": "func_name", "field_type": "simple"},
                     {
@@ -98,5 +100,5 @@ class TestLambdaFunctionResourceSpec(TestCase):
                 },
             },
         }
-        self.assertListEqual([resource.to_dict() for resource in resources], expected_resources)
+        self.assertListEqual([resource.dict() for resource in resources], expected_resources)
         self.assertDictEqual(scan_accessor.api_call_stats.to_dict(), expected_api_call_stats)

@@ -121,14 +121,14 @@ def build_table_defns(graph_sets: Iterable[GraphSet]) -> Mapping[str, Tuple[Colu
     ] = defaultdict(lambda: defaultdict(set))
     for graph_set in graph_sets:
         for resource in graph_set.resources:
-            table_name = normalize_name(resource.type_name)
+            table_name = normalize_name(resource.resource_type)
             for link in resource.links:
                 if isinstance(link, SimpleLink):
                     table_names_simple_obj_types[table_name][link.pred].add(type(link.obj))
     table_names_columns: DefaultDict[str, Set[Column]] = defaultdict(set)
     for graph_set in graph_sets:
         for resource in graph_set.resources:
-            table_name = normalize_name(resource.type_name)
+            table_name = normalize_name(resource.resource_type)
             # all top level types have an id column
             table_names_columns[table_name].add(PKColumn(f"_{table_name}_id"))
             # all top level types have an arn
@@ -196,7 +196,7 @@ def build_data(
     for graph_set in graph_sets:
         for resource in graph_set.resources:
             resource_data: List[Primitive] = []
-            table_name = normalize_name(resource.type_name)
+            table_name = normalize_name(resource.resource_type)
             arn = resource.resource_id
             # build a primary key for this resource
             pk = arns_pks.get(arn)

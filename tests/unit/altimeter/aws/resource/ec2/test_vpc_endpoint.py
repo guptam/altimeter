@@ -37,12 +37,13 @@ class TestVpcEndpointResourceSpec(unittest.TestCase):
             data=aws_resource_dict, context={"account_id": "111122223333", "region": "us-west-2"}
         )
         resource = Resource(
-            resource_id=resource_arn, type_name=VpcEndpointResourceSpec.type_name, links=links
+            resource_id=resource_arn, resource_type=VpcEndpointResourceSpec.type_name, links=links
         )
-        alti_resource_dict = resource.to_dict()
+        alti_resource_dict = resource.dict()
 
         expected_alti_resource_dict = {
-            "type": "vpc-endpoint",
+            "resource_id": "arn:aws:ec2:us-east-2:111122223333:vpc-endpoint/vpce-01dec98cb17ac542",
+            "resource_type": "vpc-endpoint",
             "links": [
                 {"pred": "vpc_endpoint_type", "obj": "Gateway", "field_type": "simple"},
                 {"pred": "service_name", "obj": "com.amazonaws.us-west-2.s3", "field_type": "simple"},

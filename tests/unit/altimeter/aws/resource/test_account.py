@@ -19,7 +19,8 @@ class TestEBSVolumeResourceSpec(TestCase):
 
         expected_resources = [
             {
-                "type": "aws:account",
+                "resource_id": "arn:aws::::account/123456789012",
+                "resource_type": "aws:account",
                 "links": [{"pred": "account_id", "obj": "123456789012", "field_type": "simple"}],
             }
         ]
@@ -33,7 +34,7 @@ class TestEBSVolumeResourceSpec(TestCase):
                 },
             },
         }
-        self.assertListEqual([resource.to_dict() for resource in resources], expected_resources)
+        self.assertListEqual([resource.dict() for resource in resources], expected_resources)
         self.assertDictEqual(scan_accessor.api_call_stats.to_dict(), expected_api_call_stats)
 
     @mock_sts

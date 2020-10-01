@@ -17,11 +17,12 @@ class TestAccountPasswordPolicyResourceSpec(unittest.TestCase):
             data=aws_resource_dict, context={"account_id": "111122223333", "region": "us-west-2"}
         )
         resource = Resource(
-            resource_id=resource_arn, type_name=IAMAccountPasswordPolicyResourceSpec.type_name, links=links
+            resource_id=resource_arn, resource_type=IAMAccountPasswordPolicyResourceSpec.type_name, links=links
         )
-        alti_resource_dict = resource.to_dict()
+        alti_resource_dict = resource.dict()
 
-        expected_alti_resource_dict = {'type': 'account-password-policy',
+        expected_alti_resource_dict = {'resource_id': 'arn:aws:iam:us-west-2:111122223333:account-password-policy/default',
+                                       'resource_type': 'account-password-policy',
                                        'links': [{'pred': 'minimum_password_length', 'obj': 12, 'field_type': 'simple'},
                                                  {'pred': 'require_symbols', 'obj': True, 'field_type': 'simple'},
                                                  {'pred': 'require_numbers', 'obj': True, 'field_type': 'simple'}, {

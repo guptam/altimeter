@@ -1,9 +1,10 @@
 """A GraphSet represents the contents of a Graph."""
-import uuid
 from collections import defaultdict
+import copy
 import json
 from pathlib import Path
 from typing import Any, DefaultDict, Dict, List, Type
+import uuid
 
 from rdflib import BNode, Graph, Literal, Namespace, RDF
 
@@ -120,7 +121,7 @@ class GraphSet:
         Returns:
             dict representation of this GraphSet
         """
-        resources = {resource.resource_id: resource.to_dict() for resource in self.resources}
+        resources = {resource.resource_id: resource.dict() for resource in self.resources}
         return {
             "name": self.name,
             "version": self.version,
@@ -194,7 +195,9 @@ class GraphSet:
         errors = data["errors"]
         stats = MultilevelCounter.from_dict(data["stats"])
         for resource_id, resource_data in data["resources"].items():
-            resource = Resource.from_dict(resource_id, resource_data)
+            resource_copy = copy.deepcopy(resource_data)
+            resource_copy["resource_id"] = resource_id
+            resource = Resource.parse_obj(resource_copy)
             resources.append(resource)
         return cls(
             name=name,
