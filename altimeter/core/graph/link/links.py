@@ -1,10 +1,9 @@
 """A Link represents the predicate-object portion of a triple."""
 import uuid
-from typing import Any, Dict, Type, List
+from typing import Any, Dict, List
 
 from rdflib import BNode, Graph, Literal, Namespace, RDF, XSD
 
-from altimeter.core.graph.exceptions import LinkParseException
 from altimeter.core.graph.link.base import Link
 from altimeter.core.graph.node_cache import NodeCache
 
@@ -13,6 +12,8 @@ class SimpleLink(Link):
     """A SimpleLink represents a scalar value. In RDF terms a SimpleLink creates a Literal
     in the graph."""
 
+    pred: str
+    obj: Any
     field_type = "simple"
 
     def to_rdf(
@@ -60,6 +61,8 @@ class MultiLink(Link):
     """Represents a named set of sublinks.  For example an 'EBSVolumeAttachemnt'
     MultiLink could exist which specifies sublinks Volume, AttachTime"""
 
+    pred: str
+    obj: Any
     field_type = "multi"
 
     def to_rdf(
@@ -99,6 +102,8 @@ class MultiLink(Link):
 class ResourceLinkLink(Link):
     """Represents a link to another resource which must exist in the graph."""
 
+    pred: str
+    obj: Any
     field_type = "resource_link"
 
     def to_rdf(
@@ -139,6 +144,8 @@ class ResourceLinkLink(Link):
 class TransientResourceLinkLink(Link):
     """Represents a link to another resource which may or may not exist in the graph."""
 
+    pred: str
+    obj: Any
     field_type = "transient_resource_link"
 
     def to_rdf(
@@ -179,6 +186,8 @@ class TransientResourceLinkLink(Link):
 class TagLink(Link):
     """Represents a AWS-style Tag attached to a node."""
 
+    pred: str
+    obj: str
     field_type = "tag"
 
     def to_rdf(
@@ -227,37 +236,3 @@ class TagLink(Link):
             "~to": f"{self.pred}:{self.obj}",
         }
         edges.append(edge)
-
-
-def link_from_dict(data: Dict[str, Any]) -> Link:
-    # TODO LEFT OFF HERE - we probably need to move this into the base Link class or something.
-    # this could get pretty tricky, probably want to start doing scans locally to see what
-    # is breaking.
-    """Create and return a Link subclass object from dict data.
-
-    Args:
-        data: data to generate a Link from
-
-    Returns:
-        object of the appropriate Link subclass
-    """
-    field_type = data.get("field_type")
-    if field_type is None:
-        raise LinkParseException(f"key 'type' not found in {data}")
-    pred = data.get("pred")
-    if pred is None:
-        raise LinkParseException(f"key 'pred' not found in {data}")
-    obj = data.get("obj")
-    if field_type == "transient_resource_link":
-        return TransientResourceLinkLink.parse_obj(data)
-    if obj is None:
-        raise LinkParseException(f"key 'obj' not found in {data}")
-    if field_type == "simple":
-        return SimpleLink.parse_obj(data)
-    if field_type == "multi":
-        return MultiLink.parse_obj(data)
-    if field_type == "resource_link":
-        return ResourceLinkLink.parse_obj(data)
-    if field_type == "tag":
-        return TagLink.parse_obj(data)
-    raise LinkParseException(f"Unknown field type '{field_type}")

@@ -2,8 +2,11 @@ from typing import Any, Dict, List
 
 from rdflib import BNode, Namespace, Graph
 
-from altimeter.core.graph.node_cache import NodeCache
 from altimeter.core.alti_base_model import BaseAltiModel
+from altimeter.core.graph.exceptions import LinkParseException
+from altimeter.core.graph.node_cache import NodeCache
+
+from altimeter.core.graph.link import links as Links
 
 
 class Link(BaseAltiModel):
@@ -44,3 +47,28 @@ class Link(BaseAltiModel):
              prefix: a prefix to add to the attribute name
         """
         raise NotImplementedError()
+
+    @classmethod
+    def parse_obj(cls, data: Dict[str, Any]) -> "Link":
+        if cls != Link:
+            return super().parse_obj(data)
+        field_type = data.get("field_type")
+        if field_type is None:
+            raise LinkParseException(f"key 'type' not found in {data}")
+        pred = data.get("pred")
+        if pred is None:
+            raise LinkParseException(f"key 'pred' not found in {data}")
+        obj = data.get("obj")
+        if field_type == "transient_resource_link":
+            return Links.TransientResourceLinkLink.parse_obj(data)
+        if obj is None:
+            raise LinkParseException(f"key 'obj' not found in {data}")
+        if field_type == "simple":
+            return Links.SimpleLink.parse_obj(data)
+        if field_type == "multi":
+            return Links.MultiLink.parse_obj(data)
+        if field_type == "resource_link":
+            return Links.ResourceLinkLink.parse_obj(data)
+        if field_type == "tag":
+            return Links.TagLink.parse_obj(data)
+        raise LinkParseException(f"Unknown field type '{field_type}")

@@ -10,49 +10,47 @@ from altimeter.core.graph.link.links import (
     SimpleLink,
     TagLink,
     TransientResourceLinkLink,
-    link_from_dict,
 )
 from altimeter.core.graph.link.base import Link
 from altimeter.core.graph.node_cache import NodeCache
 
-
-class TestLinkFromDict(unittest.TestCase):
+class TestLinkParseObj(unittest.TestCase):
     def testMissingType(self):
         with self.assertRaises(LinkParseException):
-            link_from_dict({})
+            Link.parse_obj({})
 
     def testMissingPred(self):
         with self.assertRaises(LinkParseException):
-            link_from_dict({"field_type": "simple"})
+            Link.parse_obj({"field_type": "simple"})
 
     def testMissingObj(self):
         with self.assertRaises(LinkParseException):
-            link_from_dict({"field_type": "simple", "pred": "test-pred"})
+            Link.parse_obj({"field_type": "simple", "pred": "test-pred"})
 
     def testUnknownType(self):
         with self.assertRaises(LinkParseException):
-            link_from_dict({"field_type": "fake-type", "pred": "test-pred", "obj": "test-obj"})
+            Link.parse_obj({"field_type": "fake-type", "pred": "test-pred", "obj": "test-obj"})
 
     def testSimpleType(self):
-        link = link_from_dict({"field_type": "simple", "pred": "test-pred", "obj": "test-obj"})
+        link = Link.parse_obj({"field_type": "simple", "pred": "test-pred", "obj": "test-obj"})
         self.assertIsInstance(link, SimpleLink)
 
     def testTagType(self):
-        link = link_from_dict({"field_type": "tag", "pred": "test-pred", "obj": "test-obj"})
+        link = Link.parse_obj({"field_type": "tag", "pred": "test-pred", "obj": "test-obj"})
         self.assertIsInstance(link, TagLink)
 
     def testResourceLinkType(self):
-        link = link_from_dict({"field_type": "resource_link", "pred": "test-pred", "obj": "test-obj"})
+        link = Link.parse_obj({"field_type": "resource_link", "pred": "test-pred", "obj": "test-obj"})
         self.assertIsInstance(link, ResourceLinkLink)
 
     def testTransientResourceLinkType(self):
-        link = link_from_dict(
+        link = Link.parse_obj(
             {"field_type": "transient_resource_link", "pred": "test-pred", "obj": "test-obj"}
         )
         self.assertIsInstance(link, TransientResourceLinkLink)
 
     def testMultiType(self):
-        link = link_from_dict(
+        link = Link.parse_obj(
             {
                 "field_type": "multi",
                 "pred": "test-pred",
